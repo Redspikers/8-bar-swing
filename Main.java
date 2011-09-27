@@ -6,8 +6,10 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println("test");
-		System.out.println("test");
+		int entier = 5;
+		String str ="HO HO HO !";
+		System.out.println("test " + entier + ".");
+		System.out.println("test "+str);
 		System.out.println("test");
 	}
 
