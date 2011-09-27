@@ -8,9 +8,25 @@ public class Main {
 		// TODO Auto-generated method stub
 		int entier = 5;
 		String str ="HO HO HO !";
-		System.out.println("test " + entier + ".");
-		System.out.println("test "+str);
-		System.out.println("test");
+		Partie test = new Partie(18, 'M', 1.85);
+		
+		System.out.println(test.getSexe());
+		test.setSexe('F');
+		System.out.println(test.getSexe());
+		
+		System.out.println(test.getAge());
+		test.setAge(115);
+		System.out.println(test.getAge());
+		
+		System.out.println(test.getTaille());
+		test.setTaille(2.49);
+		System.out.println(test.getTaille());
+		
+
+		System.out.println(new Carte(11, 2)).get()[0]);
+
+		
+
 	}
 
 }
