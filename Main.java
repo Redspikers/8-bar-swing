@@ -1,5 +1,5 @@
 
-public class Main {
+public class Main implements Enums_Interfaces.Symbole, Enums_Interfaces.Hauteur{
 
 	public static void main(String[] args) {
 				
@@ -14,7 +14,7 @@ public class Main {
 		
 		for(i=0; i<8; i++)	System.out.println("Joueur : " + mesJoueurs[i].getId());
 
-		
+		System.out.println("test : " + AS);
 
 	}
 
