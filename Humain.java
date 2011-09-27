@@ -5,7 +5,7 @@ public class Humain extends Joueur {
 		super(id);
 		
 	}
-
+//test
 	@Override
 	public boolean jouerCarte() {
 		// TODO Auto-generated method stub
