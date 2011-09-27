@@ -1,29 +1,18 @@
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		int entier = 5;
-		String str ="HO HO HO !";
-		Partie test = new Partie(18, 'M', 1.85);
+				
+		// Création de huit joueurs
+		int i;
+		Joueur mesJoueurs[ ] = new Joueur[8];
+		mesJoueurs[0] = new Humain(0);
+		mesJoueurs[1] = new Humain(1);
+		for(i=2; i<8; i++){
+			mesJoueurs[i] = new Virtuel(i);
+		}
 		
-		System.out.println(test.getSexe());
-		test.setSexe('F');
-		System.out.println(test.getSexe());
-		
-		System.out.println(test.getAge());
-		test.setAge(115);
-		System.out.println(test.getAge());
-		
-		System.out.println(test.getTaille());
-		test.setTaille(2.49);
-		System.out.println(test.getTaille());
-		
-
-		System.out.println(new Carte(11, 2)).get()[0]);
+		for(i=0; i<8; i++)	System.out.println("Joueur : " + mesJoueurs[i].getId());
 
 		
 
