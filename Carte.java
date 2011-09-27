@@ -1,16 +1,11 @@
 
 public class Carte {
-	//2, 3, 4, ..., 14
+	//2, 3, 4, ..., 15
 	private int hauteur;
 	
-	//0, 1, 2 et 3 = Pique, carreau, trèfle et coeur
+	//0, 1, 2, 3, 4 = Pique, carreau, trèfle, coeur et joker
 	private int symb;
 	
-
-	public Carte(){
-		this.hauteur = 2;
-		this.symb = 0;
-	}
 	public Carte(int h, int s){
 		this.hauteur = h;
 		this.symb = s;
