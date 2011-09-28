@@ -2,25 +2,42 @@ import java.util.ArrayList;
 
 
 public class Partie {
-
 	
-	public Partie(){
-		// Création de huit joueurs
-		int i;
-		ArrayList<Joueur> mesJoueurs = new ArrayList<Joueur>();
-		mesJoueurs.add(new Humain(0));
-		mesJoueurs.add(new Humain(1));
-		for(i=2; i<8; i++){
-			mesJoueurs.add(new Virtuel(i));
-		}
+	private int nbJoueurs;
+	private int nbHumains;
+	private ArrayList<Joueur> mesJoueurs;
+	private Pioche maPioche;
+	
+	public Partie(int nbJ, int nbH){
+		this.nbJoueurs = nbJ;
+		this.nbHumains = nbH;
+		
+		this.mesJoueurs = new ArrayList<Joueur>();
 		
 		// Création de la pioche
-		Pioche maPioche = new Pioche(); 
+		this.maPioche = new Pioche();
+		
+		//Création des joueurs et 
+		//Distributions des cartes aux joueurs
+		int i;
+		for(i=0; i<this.nbJoueurs; i++){
+			if(i<this.nbHumains)
+				mesJoueurs.add(new Humain(i));
+			else
+				mesJoueurs.add(new Virtuel(i));
+			mesJoueurs.get(i).distribuer(maPioche);
+		}
+
+		//ICI on va retourner la bergère.
+		
+		
+		
+
 		
 		// Vérifications
-		System.out.println("Le premier joueur est : " + mesJoueurs.get(0).getId() + " avec un état " + mesJoueurs.get(0).isEtat());
-		Carte maCarte = maPioche.piocherCarte();
-		System.out.println("La première carte est : " + maCarte.get()[0] + " " + maCarte.get()[1]);
+	}
+	public void gestionDuJeu(){		
+		System.out.println("ez");
 	}
 
 

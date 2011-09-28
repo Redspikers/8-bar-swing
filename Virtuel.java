@@ -7,13 +7,7 @@ public class Virtuel extends Joueur {
 	}
 
 	@Override
-	public boolean jouerCarte() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean passerTour() {
+	public boolean jouer() {
 		// TODO Auto-generated method stub
 		return false;
 	}
