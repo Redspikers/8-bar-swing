@@ -5,7 +5,6 @@ public class Humain extends Joueur {
 		super(id);
 		
 	}
-//test
 
 	@Override
 	public boolean jouerCarte() {
