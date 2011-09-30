@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public abstract class Joueur {
 	
-	private static int NB_CARTES_PAR_JOUEUR = 8 ;
 	private int id;
 	private boolean etat;
 	
@@ -15,13 +14,6 @@ public abstract class Joueur {
 		this.id = id;
 		this.etat = true;
 		this.monJeu = new ArrayList<Carte>();
-	}
-	
-	public void distribuer(Pioche pioche){
-		for(int i=0; i< NB_CARTES_PAR_JOUEUR; i++){
-			this.monJeu.add(pioche.piocherCarte());
-		}
-
 	}
 	
 	public int getId() {
@@ -44,6 +36,12 @@ public abstract class Joueur {
 	public boolean passerTour() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	public boolean recevoirCarte(Carte maCarte) {
+		this.monJeu.add(maCarte);
+		System.out.println("Joueur " + this.id + " --> Reçu : " + maCarte.get()[0] + ":" + maCarte.get()[1]);
+		return true;
 	}
 	
 }
