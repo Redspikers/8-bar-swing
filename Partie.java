@@ -79,7 +79,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		if (haut_symb[1] == JOKER)
 			return Symbole[haut_symb[1]];
 		else
-			return Hauteur[haut_symb[0]-2]+ " de " + Symbole[haut_symb[1]];
+			return Hauteur[haut_symb[0]]+ " de " + Symbole[haut_symb[1]];
 		
 	}
 
