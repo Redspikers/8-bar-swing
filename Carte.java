@@ -14,4 +14,10 @@ public class Carte {
 	public int[] get(){
 		return new int[]{this.hauteur, this.symb};
 	}
+	public int getH(){
+		return this.hauteur;
+	}
+	public int getS(){
+		return this.symb;
+	}
 }

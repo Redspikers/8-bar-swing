@@ -40,7 +40,6 @@ public abstract class Joueur {
 	
 	public boolean recevoirCarte(Carte maCarte) {
 		this.monJeu.add(maCarte);
-		System.out.println("Joueur " + this.id + " --> Reçu : " + maCarte.get()[0] + ":" + maCarte.get()[1]);
 		return true;
 	}
 	
