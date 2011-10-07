@@ -28,7 +28,7 @@ public abstract class Joueur {
 		return etat;
 	}
 	
-	public boolean jouerCarte() {
+	public boolean jouerCarte(Carte c) {
 		// TODO Auto-generated method stub
 		return false;
 	}

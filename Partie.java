@@ -1,14 +1,21 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
-
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole {
+public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages {
 	
 	private static int NB_CARTES_PAR_JOUEUR = 8;
-	private int nbJoueurs;
-	private int nbHumains;
+
 	private ArrayList<Joueur> mesJoueurs;
 	private Pioche maPioche;
 	private Pile maPile;
+	
+	private int nbJoueurs;
+	private int nbHumains;
+	private int numJoueurCourant = 0; //Le numéro du joueur qui doit jouer
+	//Le déroulement est croissant (joueur0 puis joueur1 puis ...) au début mais peut s'inverser.
+	private boolean sensCroissant = true; 
+	
+	
 	
 	public Partie(int nbJ, int nbH){
 		this.nbJoueurs = nbJ;
@@ -30,6 +37,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			else
 				mesJoueurs.add(new Virtuel(i));
 		}
+		Collections.shuffle(mesJoueurs);
 		
 		//Distributions des cartes aux joueurs
 		distribuer();
@@ -38,14 +46,15 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		System.out.println("Bergère : "+traduireCarte(retournerBergere()));
 		System.out.println("Haut de pile : "+traduireCarte(maPile.getHautDePile()));
 		
-		
-
-		
-		// Vérifications
 	}
 	
-	public void gestionDuJeu(){		
-		
+	public void gestionDuJeu(){
+		/*
+		boolean enMarche = true;
+		while(enMarche){
+			mesJoueurs.get(numJoueurCourant).jouer();
+			numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+		}*/
 	}
 
 	public void distribuer(){
