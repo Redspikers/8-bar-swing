@@ -7,9 +7,9 @@ public class Virtuel extends Joueur {
 	}
 
 	@Override
-	public boolean jouer() {
+	public Carte jouer(Carte hautDePile, int nbAs) {
 		// TODO Auto-generated method stub
-		return false;
+		return new Carte(-1, -1);
 	}
 
 }

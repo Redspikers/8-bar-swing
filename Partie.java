@@ -1,7 +1,9 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Collections;
 
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages {
+
+public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
 	
 	private static int NB_CARTES_PAR_JOUEUR = 8;
 
@@ -15,12 +17,14 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	//Le déroulement est croissant (joueur0 puis joueur1 puis ...) au début mais peut s'inverser.
 	private boolean sensCroissant = true; 
 	
+	public static Scanner in = new Scanner(System.in);
 	
+	private int nbAs;
 	
 	public Partie(int nbJ, int nbH){
 		this.nbJoueurs = nbJ;
 		this.nbHumains = nbH;
-		
+		this.nbAs = 0;
 		this.mesJoueurs = new ArrayList<Joueur>();
 		
 		// Création de la pioche
@@ -44,19 +48,43 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 
 		//ICI on va retourner la bergère.
 		System.out.println("Bergère : "+traduireCarte(retournerBergere()));
-		System.out.println("Haut de pile : "+traduireCarte(maPile.getHautDePile()));
 		
 	}
 	
 	public void gestionDuJeu(){
-		/*
 		boolean enMarche = true;
+		Joueur jCourant;
 		while(enMarche){
-			mesJoueurs.get(numJoueurCourant).jouer();
+			System.out.println("Haut de pile : "+traduireCarte(maPile.getHautDePile()));
+			System.out.println("Le joueur "+numJoueurCourant+" doit jouer.");
+			jCourant = mesJoueurs.get(numJoueurCourant);
+			
+			jCourant.afficherJeu();
+			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
 			numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
-		}*/
+		}
+	}
+	
+	public void analyserPassage(Carte c){
+		//Cette fonction reçoit la carte qui vient d'être jouée (c)
+		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
+		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)
+		
 	}
 
+	public String traduireCarte(Carte c){
+		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
+		//cette fonction retournera la chaine "valet de trèfle"
+		//On pourra aussi la modifier pour retourner {"valet", "trèfle"}
+		
+		int[] haut_symb = c.get();
+		//System.out.println(haut_symb[0] + "  " + haut_symb[1]);
+		if (haut_symb[1] == JOKER)
+			return Symbole[haut_symb[1]];
+		else
+			return Hauteur[haut_symb[0]]+ " de " + Symbole[haut_symb[1]];
+		
+	}
 	public void distribuer(){
 		for(Joueur monJoueur : mesJoueurs){
 			for(int i=0; i<NB_CARTES_PAR_JOUEUR; i++){
@@ -77,19 +105,6 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		}
 		maPile.empiler(c);
 		return c;
-	}
-	public String traduireCarte(Carte c){
-		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
-		//cette fonction retournera la chaine "valet de trèfle"
-		//On pourra aussi la modifier pour retourner {"valet", "trèfle"}
-		
-		int[] haut_symb = c.get();
-		//System.out.println(haut_symb[0] + "  " + haut_symb[1]);
-		if (haut_symb[1] == JOKER)
-			return Symbole[haut_symb[1]];
-		else
-			return Hauteur[haut_symb[0]]+ " de " + Symbole[haut_symb[1]];
-		
 	}
 
 }
