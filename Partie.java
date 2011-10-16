@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.Collections;
 
 
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
+public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole{
 	
 	private static int NB_CARTES_PAR_JOUEUR = 8;
 
@@ -47,7 +47,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		distribuer();
 
 		//ICI on va retourner la bergère.
-		System.out.println("Bergère : "+traduireCarte(retournerBergere()));
+		analyserPassage(retournerBergere());
 		
 	}
 	
@@ -55,13 +55,17 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		boolean enMarche = true;
 		Joueur jCourant;
 		while(enMarche){
+			System.out.println("\n");
+			Messages.Message_Info = 0;
 			System.out.println("Haut de pile : "+traduireCarte(maPile.getHautDePile()));
 			System.out.println("Le joueur "+numJoueurCourant+" doit jouer.");
 			jCourant = mesJoueurs.get(numJoueurCourant);
 			
 			jCourant.afficherJeu();
 			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
+			jCourant.setEtat(true);
 			numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+			System.out.println(Messages.MESSAGE[Messages.Message_Info]);
 		}
 	}
 	
@@ -70,6 +74,39 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
 		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)
 		
+		int i;
+		Joueur jCourant = mesJoueurs.get(numJoueurCourant);
+		Joueur jSuivant = mesJoueurs.get((sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs);
+		
+		if (c.getH() != -1){ //Si le joueur courant vient de poser une carte
+			maPile.empiler(jCourant.donnerCarte(c));
+			
+			switch(c.getH()){
+			case JOKER_H:
+				for(i=0; i<5; i++)
+					jSuivant.recevoirCarte(maPioche.piocherCarte());
+				jSuivant.setEtat(false);
+				break;	
+			case 10: sensCroissant = !sensCroissant; break;
+			case 7:	jSuivant.recevoirCarte(jCourant.donnerCarte());	break;
+			case 2:
+				for(i=0; i<2; i++)
+					jSuivant.recevoirCarte(maPioche.piocherCarte());
+				jSuivant.setEtat(false);
+				break;
+			case AS: nbAs++; break;
+			}
+		}
+		else if (this.nbAs > 0){ //Si son prédécesseur avait joué un as, et qu'il n'a pas d'as.
+			for(i=0; i<2*this.nbAs; i++)
+				jCourant.recevoirCarte(maPioche.piocherCarte());
+		}
+		else if(jCourant.etat){ //S'il n'a pas joué car il ne pouvait pas poser, il pioche !
+			jCourant.recevoirCarte(maPioche.piocherCarte());
+		}
+		
+		if (c.getH() != AS)
+			nbAs = 0;
 	}
 
 	public String traduireCarte(Carte c){

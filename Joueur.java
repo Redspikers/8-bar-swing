@@ -1,11 +1,12 @@
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 
-public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
+public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole{
 	
 	private int id;
-	private boolean etat;
+	protected boolean etat;
 	private boolean disCarte;
 	
 	protected ArrayList<Carte> monJeu;
@@ -35,6 +36,7 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 	public boolean jouerCarte(Carte c, Carte hautDePile, int nbAs) {
 		int[] c_tab    = c.get();
 		int[] pile_tab = hautDePile.get();
+		
 		if(c_tab[0] == pile_tab[0] || //si même hauteur
 		  //si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
 		  (c_tab[1] == pile_tab[1] && nbAs == 0) || 
@@ -43,15 +45,25 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 			return true;
 		return false;
 	}
-
-	public boolean passerTour() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	public boolean recevoirCarte(Carte maCarte) {
 		this.monJeu.add(maCarte);
 		return true;
+	}
+	
+	public Carte donnerCarte() {
+		Random r = new Random();
+		return this.monJeu.remove(r.nextInt(monJeu.size()));
+	}
+	
+	public Carte donnerCarte(Carte c) {
+		for (Carte c2 : monJeu){
+			if (java.util.Arrays.equals(c.get(), c2.get())){
+				monJeu.remove(c2);
+				break;
+			}
+		}
+		return c;
 	}
 	
 	public void afficherJeu(){

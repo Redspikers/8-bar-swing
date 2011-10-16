@@ -1,7 +1,5 @@
 
-
-
-public class Humain extends Joueur {
+public class Humain extends Joueur{
 
 	public Humain(int id) {
 		super(id);
@@ -10,16 +8,28 @@ public class Humain extends Joueur {
 	
 	@Override
 	public Carte jouer(Carte hautDePile, int nbAs) {
+		
+		if(this.etat == false){
+			Messages.Message_Info = Messages.DOIT_PASSER;
+			return new Carte(-1, -1);
+		}
 		int hauteur;
 		int symbole;
 		int choix;
+		boolean carteJouable = false;
 		Carte c;
 		
+		//Le joueur a-t-il au moins une carte jouable ?
+		for (Carte c2 : monJeu){
+			if(jouerCarte(c2, hautDePile, nbAs)){
+				carteJouable = true;break;
+			}
+		}
+		if(!carteJouable){
+			Messages.Message_Info = Messages.AUCUNE_CARTE_JOUABLE;
+			return new Carte(-1, -1);
+		}
 		do{
-			System.out.print("Voulez-vous passer ? non(0)/oui(1) ");choix = in.nextInt();
-			if (choix == 1)
-				return new Carte(-1, -1);
-			
 			System.out.print("Entrez la hauteur : ");hauteur = in.nextInt();
 			System.out.print("Entrez le symbole : ");symbole = in.nextInt();
 			c = new Carte(hauteur, symbole);
