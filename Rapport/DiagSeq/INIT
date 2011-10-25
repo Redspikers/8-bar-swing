@@ -1,29 +1,51 @@
-note right of Main
+note right of "main:Main"
     On creer une partie avec deux
     joueurs dont deux humains
 end note
-Main->Partie:<<create>>(2, 2)
+"main:Main"->"partie:Partie":<<create>>(2, 2)
+activate "partie:Partie"
 
 
-Partie->Pioche:<<create>
-Pioche->"maPioche:ArrayList<Carte>":<<create>>
+
+"partie:Partie"->"maPioche:Pioche":<<create>
+activate "maPioche:Pioche"
+"maPioche:Pioche"->"cPioche:Carte[]":<<create>>
 loop 106 fois (52*2 + 2)
-    Pioche->"maPioche:ArrayList<Carte>":add(c : Carte)
+    "maPioche:Pioche"->"cPioche:Carte[]":add(c : Carte)
 end loop
+deactivate "maPioche:Pioche"
 
-Partie->Pile:<<create>>
-Pile->"maPile:ArrayList<Carte>":<<create>>
-Partie->"J0:Humain":<<create>>(0)
-"J0:Humain"->"monJeu:ArrayList<Carte>":<<create>>
-Partie->"J1:Humain":<<create>>(1)
-"J1:Humain"->"monJeu:ArrayList<Carte>":<<create>>
-Partie->Partie:distribuer()
-Partie->Partie:retournerBergere()
+
+"partie:Partie"->"maPile:Pile":<<create>>
+activate "maPile:Pile"
+"maPile:Pile"->"cPile:Carte[]":<<create>>
+deactivate "maPile:Pile"
 
 
 
-note right of Main
+"partie:Partie"->"monJeu:Carte[]":<<create>>
+"partie:Partie"->"mesJoueurs:Joueur[]":<<create>>
+
+"partie:Partie"->"J0:Humain":<<create>>(0)
+activate "J0:Humain"
+"J0:Humain"->"monJeu:Carte[]":<<create>>
+deactivate "J0:Humain"
+
+
+"partie:Partie"->"J1:Humain":<<create>>(1)
+activate "J1:Humain"
+"J1:Humain"->"monJeu:Carte[]":<<create>>
+deactivate "J1:Humain"
+
+
+"partie:Partie"->"partie:Partie":distribuer()
+"partie:Partie"->"partie:Partie":retournerBergere()
+deactivate "partie:Partie"
+
+
+
+note right of "main:Main"
     On lance la methode de gestion du jeu
     qui ne s'arrete que lorsque la partie finit
 end note
-Main->Partie:gestionDuJeu()
+"main:Main"->"partie:Partie":gestionDuJeu()
