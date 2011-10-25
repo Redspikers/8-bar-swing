@@ -1,0 +1,29 @@
+note right of Main
+    On creer une partie avec deux
+    joueurs dont deux humains
+end note
+Main->Partie:<<create>>(2, 2)
+
+
+Partie->Pioche:<<create>
+Pioche->"maPioche:ArrayList<Carte>":<<create>>
+loop 106 fois (52*2 + 2)
+    Pioche->"maPioche:ArrayList<Carte>":add(c : Carte)
+end loop
+
+Partie->Pile:<<create>>
+Pile->"maPile:ArrayList<Carte>":<<create>>
+Partie->"J0:Humain":<<create>>(0)
+"J0:Humain"->"monJeu:ArrayList<Carte>":<<create>>
+Partie->"J1:Humain":<<create>>(1)
+"J1:Humain"->"monJeu:ArrayList<Carte>":<<create>>
+Partie->Partie:distribuer()
+Partie->Partie:retournerBergere()
+
+
+
+note right of Main
+    On lance la methode de gestion du jeu
+    qui ne s'arrete que lorsque la partie finit
+end note
+Main->Partie:gestionDuJeu()
