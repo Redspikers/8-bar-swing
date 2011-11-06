@@ -23,7 +23,6 @@ deactivate "maPile:Pile"
 
 
 
-"partie:Partie"->"monJeu:Carte[]":<<create>>
 "partie:Partie"->"mesJoueurs:Joueur[]":<<create>>
 
 "partie:Partie"->"J0:Humain":<<create>>(0)
