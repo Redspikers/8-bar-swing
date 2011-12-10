@@ -36,13 +36,18 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 	public boolean jouerCarte(Carte c, Carte hautDePile, int nbAs) {
 		int[] c_tab    = c.get();
 		int[] pile_tab = hautDePile.get();
-		
-		if(c_tab[0] == pile_tab[0] || //si même hauteur
-		  //si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
-		  (c_tab[1] == pile_tab[1] && nbAs == 0) || 
-		  //Si on veut jouer un 8 ou joker derriere autre chose qu'un as
-		  ((c_tab[0]==8 || c_tab[1]==JOKER) && pile_tab[0] != AS))
+		int couleurEtudiee;
+		if(c_tab[0] == pile_tab[0])
+			return true;//si même hauteur
+		if (hautDePile instanceof CarteSpeciale)
+			couleurEtudiee = ((CarteSpeciale)hautDePile).getCouleurChoisie();
+		else
+			couleurEtudiee = pile_tab[1];
+		if (c_tab[1] == couleurEtudiee && nbAs == 0)//si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
 			return true;
+		  //Si on veut jouer un 8 ou joker derriere autre chose qu'un as
+		if((c_tab[0]==8 || c_tab[1]==JOKER) && pile_tab[0] != AS)
+		  return true;
 		return false;
 	}
 	
@@ -72,6 +77,10 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 			System.out.print(traduireCarte(c)+", ");
 		}
 		System.out.print("\n");
+	}
+	public int getNbCartesJeu(){
+		//Affiche le nombre de cartes dans le jeu du joueur.
+		return monJeu.size();
 	}
 	
 	protected boolean inJeu(Carte c){

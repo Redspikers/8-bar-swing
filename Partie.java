@@ -3,27 +3,45 @@ import java.util.Scanner;
 import java.util.Collections;
 
 
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole{
+public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
 	
 	private static int NB_CARTES_PAR_JOUEUR = 8;
-
+	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
 	private Pioche maPioche;
 	private Pile maPile;
 	
 	private int nbJoueurs;
 	private int nbHumains;
-	private int numJoueurCourant = 0; //Le numéro du joueur qui doit jouer
+	private int numJoueurCourant; //Le numéro du joueur qui doit jouer
 	//Le déroulement est croissant (joueur0 puis joueur1 puis ...) au début mais peut s'inverser.
-	private boolean sensCroissant = true; 
+	private boolean sensCroissant; 
+	private boolean debut;
 	
 	public static Scanner in = new Scanner(System.in);
 	
 	private int nbAs;
 	
-	public Partie(int nbJ, int nbH){
+	public Partie(int nbH, int nbJ){
+		// Création du tableau de joueurs
+		this.mesJoueurs = new ArrayList<Joueur>();
+		
+		// Création de la pioche
+		this.maPioche = new Pioche();
+		
+		// Création de la pile
+		this.maPile = new Pile();
+		
+		init(nbH, nbJ);
+		
+	}
+	
+	public void init(int nbH, int nbJ){
 		this.nbJoueurs = nbJ;
 		this.nbHumains = nbH;
+		this.numJoueurCourant = 0;
+		this.sensCroissant = true;
+		this.debut = true;
 		this.nbAs = 0;
 		this.mesJoueurs = new ArrayList<Joueur>();
 		
@@ -41,7 +59,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			else
 				mesJoueurs.add(new Virtuel(i));
 		}
-		Collections.shuffle(mesJoueurs);
+		//Collections.shuffle(mesJoueurs); 
 		
 		//Distributions des cartes aux joueurs
 		distribuer();
@@ -49,10 +67,13 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		//ICI on va retourner la bergère.
 		analyserPassage(retournerBergere());
 		
+		gestionDuJeu();
+		
 	}
 	
 	public void gestionDuJeu(){
 		boolean enMarche = true;
+		Carte c;
 		Joueur jCourant;
 		while(enMarche){
 			System.out.println("\n");
@@ -62,22 +83,35 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			jCourant = mesJoueurs.get(numJoueurCourant);
 			
 			jCourant.afficherJeu();
-			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
+			c = jCourant.jouer(maPile.getHautDePile(), this.nbAs);
+			System.out.println("\nIl joue : " + traduireCarte(c));
+			analyserPassage(c);
 			jCourant.setEtat(true);
 			numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
-			System.out.println(Messages.MESSAGE[Messages.Message_Info]);
+			System.out.println(""+MESSAGE[Message_Info]);
+			if (isVictoire())
+				enMarche = false;
 		}
+		System.out.println("La partie est terminée, on va rejouer.");
+		init(2, 2);
 	}
 	
-	public void analyserPassage(Carte c){
+public void analyserPassage(Carte c){
 		//Cette fonction reçoit la carte qui vient d'être jouée (c)
 		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
 		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)
 		
 		int i;
+		
+		
 		Joueur jCourant = mesJoueurs.get(numJoueurCourant);
 		Joueur jSuivant = mesJoueurs.get((sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs);
-		
+		if (debut){ //au premier tour, c'est la partie qui retourne la bergère.
+			jCourant = mesJoueurs.get(numJoueurCourant);
+			jSuivant = mesJoueurs.get(numJoueurCourant);
+			debut = false;
+		}
+
 		if (c.getH() != -1){ //Si le joueur courant vient de poser une carte
 			maPile.empiler(jCourant.donnerCarte(c));
 			
@@ -86,29 +120,50 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				for(i=0; i<5; i++)
 					jSuivant.recevoirCarte(maPioche.piocherCarte());
 				jSuivant.setEtat(false);
+				Message_Info = POSE_JOKER;
 				break;	
-			case 10: sensCroissant = !sensCroissant; break;
-			case 7:	jSuivant.recevoirCarte(jCourant.donnerCarte());	break;
+			case 10: 
+				sensCroissant = !sensCroissant; 
+				Message_Info = POSE_10; 
+				break;
+			case 8: Message_Info = POSE_8; break;
+			case 7:	
+				jSuivant.recevoirCarte(jCourant.donnerCarte()); 
+				Message_Info = POSE_7;	
+				break;
 			case 2:
 				for(i=0; i<2; i++)
 					jSuivant.recevoirCarte(maPioche.piocherCarte());
 				jSuivant.setEtat(false);
+				Message_Info = POSE_2;
 				break;
 			case AS: nbAs++; break;
 			}
 		}
-		else if (this.nbAs > 0){ //Si son prédécesseur avait joué un as, et qu'il n'a pas d'as.
-			for(i=0; i<2*this.nbAs; i++)
+		else{
+			Message_Info = DOIT_PASSER;
+			if (this.nbAs > 0){ //Si son prÃ©dÃ©cesseur avait jouÃ© un as, et qu'il n'a pas d'as.
+				for(i=0; i<2*this.nbAs; i++)
+					jCourant.recevoirCarte(maPioche.piocherCarte());
+				Message_Info = POSE_AS;
+			}
+			else if(jCourant.etat){ //S'il n'a pas jouÃ© car il ne pouvait pas poser, il pioche !
+				Message_Info = AUCUNE_CARTE_JOUABLE;
 				jCourant.recevoirCarte(maPioche.piocherCarte());
-		}
-		else if(jCourant.etat){ //S'il n'a pas joué car il ne pouvait pas poser, il pioche !
-			jCourant.recevoirCarte(maPioche.piocherCarte());
+			}
 		}
 		
 		if (c.getH() != AS)
 			nbAs = 0;
 	}
-
+	
+	public boolean isVictoire(){
+		for(Joueur j : mesJoueurs){
+			if(j.getNbCartesJeu() == 0)
+				return true;
+		}
+		return false;
+	}
 	public String traduireCarte(Carte c){
 		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
 		//cette fonction retournera la chaine "valet de trèfle"
@@ -118,6 +173,8 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		//System.out.println(haut_symb[0] + "  " + haut_symb[1]);
 		if (haut_symb[1] == JOKER)
 			return Symbole[haut_symb[1]];
+		else if (haut_symb[1] == -1)
+			return "rien";
 		else
 			return Hauteur[haut_symb[0]]+ " de " + Symbole[haut_symb[1]];
 		
@@ -133,14 +190,13 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	}
 	public Carte retournerBergere(){
 		//Tant que la bergère est un joker,
-		//on recréer une pioche et on reéssaye.
+		//on recreer une pioche et on reessaye.
 		
-		Carte c = maPioche.piocherCarte();
-		while (c.getS() == JOKER){
-			this.maPioche = new Pioche();
+		Carte c;
+		do{
 			c = maPioche.piocherCarte();
-		}
-		maPile.empiler(c);
+			maPile.empiler(c);
+		}while (c.getS() == JOKER || c.getH() == 8 || c.getH() == 10 || c.getH() == 2 || c.getH() == AS);
 		return c;
 	}
 

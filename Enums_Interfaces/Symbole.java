@@ -7,5 +7,5 @@ public interface Symbole {
     public final static int COEUR   = 3;
     public final static int JOKER   = 4;
     
-    public final static String Symbole[] = {"pique", "carreau", "trèfle", "coeur", "joker"};
+    public final static String Symbole[] = {"pique", "carreau", "trèfle", "coeur", "JOKER"};
 }

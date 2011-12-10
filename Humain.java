@@ -10,11 +10,11 @@ public class Humain extends Joueur{
 	public Carte jouer(Carte hautDePile, int nbAs) {
 		
 		if(this.etat == false){
-			Messages.Message_Info = Messages.DOIT_PASSER;
 			return new Carte(-1, -1);
 		}
 		int hauteur;
 		int symbole;
+		int choix;
 		boolean carteJouable = false;
 		Carte c;
 		
@@ -25,7 +25,6 @@ public class Humain extends Joueur{
 			}
 		}
 		if(!carteJouable){
-			Messages.Message_Info = Messages.AUCUNE_CARTE_JOUABLE;
 			return new Carte(-1, -1);
 		}
 		do{
@@ -35,6 +34,15 @@ public class Humain extends Joueur{
 			
 		}while(!(inJeu(c) && jouerCarte(c, hautDePile, nbAs)));
 		System.out.print("IL A TROUVE DANS LE JEU et c'est bon");
+		
+		//Si la carte est une carte spéciale, on lui demande de choisir la couleur.
+		if (hauteur==8 || symbole==JOKER){
+			CarteSpeciale cs = new CarteSpeciale(hauteur, symbole);
+			System.out.print("\nEntrez la couleur choisie : ");
+			cs.setCouleurChoisie(in.nextInt());
+			return cs;
+		}
+		
 		return c;
 	}
 
