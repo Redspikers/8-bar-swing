@@ -15,7 +15,6 @@ public class Humain extends Joueur{
 		}
 		int hauteur;
 		int symbole;
-		int choix;
 		boolean carteJouable = false;
 		Carte c;
 		
