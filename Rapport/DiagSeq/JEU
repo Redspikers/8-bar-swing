@@ -1,0 +1,51 @@
+note right of "main:Main"
+    On lance la methode de gestion du jeu
+    qui ne s'arrete que lorsque la partie finit
+end note
+"main:Main"->"partie:Partie":gestionDuJeu()
+activate "partie:Partie"
+"partie:Partie"->"J0:Virtuel":"getEtat():bool"
+"J0:Virtuel"-->"partie:Partie":passeTour
+
+
+opt Si passeTour vaut false
+"partie:Partie"->"J0:Virtuel":jouer(hautDePile:Carte):Carte
+activate "J0:Virtuel"
+note left of "J0:Virtuel"
+    On imagine que J0 joue un 2
+end note
+"J0:Virtuel"-->"partie:Partie":carteChoisie
+deactivate "J0:Virtuel"
+"partie:Partie"->"maPile:Pile":empiler(carteChoisie)
+"partie:Partie"->"partie:Partie":analyserPassage(carteChoisie)
+
+loop Repete deux fois
+    "partie:Partie"->"maPioche:Pioche":piocherCarte():Carte
+    activate "maPioche:Pioche"
+    "maPioche:Pioche"-->"partie:Partie":cartePiochee
+    deactivate "maPioche:Pioche"
+    "partie:Partie"->"J1:Humain":recevoirCarte(cartePiochee)
+end
+"partie:Partie"->"J1:Humain":"setEtat(false:bool)"
+
+
+"partie:Partie"->"partie:Partie":"isVictoire():(victoire:bool)"
+opt victoire == true
+    "partie:Partie"-->"main:Main":false
+    note right of "main:Main"
+        Arret de la partie, retour au main
+    end note
+end
+end
+
+"partie:Partie"->"J1:Humain":"getEtat():bool"
+"J1:Humain"-->"partie:Partie":passeTour
+
+
+opt Si passeTour vaut false
+activate "J1:Humain"
+note left of "J0:Virtuel"
+    Ici, passeTour vaut True
+   donc J1 doit passer
+end note
+deactivate "J1:Humain"

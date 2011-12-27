@@ -1,0 +1,51 @@
+note right of Main
+    On lance la methode de gestion du jeu
+    qui ne s'arrete que lorsque la partie finit
+end note
+Main->Partie:gestionDuJeu()
+activate Partie
+Partie->J0:"getEtat():bool"
+J0-->Partie:passeTour
+
+
+opt Si passeTour vaut false
+Partie->J0:jouer(hautDePile:Carte):Carte
+activate J0
+note left of J0
+    On imagine que J0 joue un 2
+end note
+J0-->Partie:carteChoisie
+deactivate J0
+Partie->maPile:empiler(carteChoisie)
+Partie->Partie:analyserPassage(carteChoisie)
+
+loop Repete deux fois
+    Partie->maPioche:piocherCarte():Carte
+    activate maPioche
+    maPioche-->Partie:cartePiochee
+    deactivate maPioche
+    Partie->J1:recevoirCarte(cartePiochee)
+end
+Partie->J1:"setEtat(false:bool)"
+
+
+Partie->Partie:"isVictoire():(victoire:bool)"
+opt victoire == true
+    Partie-->Main:false
+    note right of Main
+        Arret de la partie, retour au main
+    end note
+end
+end
+
+Partie->J1:"getEtat():bool"
+J1-->Partie:passeTour
+
+
+opt Si passeTour vaut false
+activate J1
+note left of J0
+    Ici, passeTour vaut True
+   donc J1 doit passer
+end note
+deactivate J1

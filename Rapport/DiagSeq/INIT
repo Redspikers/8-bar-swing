@@ -1,0 +1,50 @@
+note right of "main:Main"
+    On creer une partie avec deux
+    joueurs dont deux humains
+end note
+"main:Main"->"partie:Partie":<<create>>(2, 2)
+activate "partie:Partie"
+
+
+
+"partie:Partie"->"maPioche:Pioche":<<create>
+activate "maPioche:Pioche"
+"maPioche:Pioche"->"cPioche:Carte[]":<<create>>
+loop 106 fois (52*2 + 2)
+    "maPioche:Pioche"->"cPioche:Carte[]":add(c : Carte)
+end loop
+deactivate "maPioche:Pioche"
+
+
+"partie:Partie"->"maPile:Pile":<<create>>
+activate "maPile:Pile"
+"maPile:Pile"->"cPile:Carte[]":<<create>>
+deactivate "maPile:Pile"
+
+
+
+"partie:Partie"->"mesJoueurs:Joueur[]":<<create>>
+
+"partie:Partie"->"J0:Humain":<<create>>(0)
+activate "J0:Humain"
+"J0:Humain"->"monJeu:Carte[]":<<create>>
+deactivate "J0:Humain"
+
+
+"partie:Partie"->"J1:Humain":<<create>>(1)
+activate "J1:Humain"
+"J1:Humain"->"monJeu:Carte[]":<<create>>
+deactivate "J1:Humain"
+
+
+"partie:Partie"->"partie:Partie":distribuer()
+"partie:Partie"->"partie:Partie":retournerBergere()
+deactivate "partie:Partie"
+
+
+
+note right of "main:Main"
+    On lance la methode de gestion du jeu
+    qui ne s'arrete que lorsque la partie finit
+end note
+"main:Main"->"partie:Partie":gestionDuJeu()
