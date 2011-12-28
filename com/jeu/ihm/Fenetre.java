@@ -1,6 +1,8 @@
 package com.jeu.ihm;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,8 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -22,12 +27,16 @@ import com.jeu.core.Partie;
 public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	
 	private Partie maPartie;
-	private GridBagConstraints gbc = new GridBagConstraints();
 	private GridBagLayout gbl = new GridBagLayout();
+	private GridBagConstraints gbc = new GridBagConstraints();
+	private JPanel conteneurTotal = new JPanel(new BorderLayout());
+	private JPanel conteneurMilieu = new JPanel(gbl);
+	private JPanel conteneurStatusBar = new JPanel();
 	private ArrayList<BoutonCarte> lBoutonCarte = new ArrayList<BoutonCarte>(); 
 	private ArrayList<JLabel> lJLabel = new ArrayList<JLabel>(); 
 	private BoutonCarte boutonPile;
 	private BoutonCarteDos boutonPioche;
+	private JLabel statusBarLabel;
 	
 	public Fenetre(){
 		
@@ -47,10 +56,10 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 			e.printStackTrace();
 		}
 		*/
-		this.setLayout(this.gbl);
+        this.setContentPane(conteneurTotal);
 		
-		int nbHumains = 2;
-		int nbJoueurs = 2;
+		int nbHumains = 4;
+		int nbJoueurs = 4;
 		maPartie = new Partie(nbHumains, nbJoueurs);
 		
 		for(int i=0; i<nbJoueurs; i++){ //On ecrit les differents joueurs
@@ -60,11 +69,11 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	        gbc.gridwidth = 1;
 	        gbc.anchor = GridBagConstraints.CENTER;
 	        gbc.insets = new Insets(10, 10, 10, 10);
-	        this.add(new BoutonCarteDos("texte"), gbc);
+	        conteneurMilieu.add(new BoutonCarteDos(), gbc);
 	        gbc.gridy = 1;
 	        gbc.insets = new Insets(0, 10, 30, 10);
 	        lJLabel.add(new JLabel("Joueur " + i));
-	        this.add(lJLabel.get(i), gbc);
+	        conteneurMilieu.add(lJLabel.get(i), gbc);
 		}
 		updateJoueursCouleurs();
 		
@@ -72,25 +81,30 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         gbc.gridx = 0;
         gbc.gridy = 2;
         this.boutonPile = new BoutonCarte(maPartie.getPile().getHautDePile());
-        this.add(boutonPile, gbc);
+        conteneurMilieu.add(boutonPile, gbc);
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 10, 30, 10);
-        this.add(new JLabel("Pile"), gbc);
+        conteneurMilieu.add(new JLabel("Pile"), gbc);
         
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 1;
         gbc.gridy = 2;
         this.boutonPioche = new BoutonCarteDos();
         this.boutonPioche.addActionListener(new BoutonPiocheListener());
-        this.add(boutonPioche, gbc);
+        conteneurMilieu.add(boutonPioche, gbc);
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 10, 30, 10);
-        this.add(new JLabel("Pioche"), gbc);
+        conteneurMilieu.add(new JLabel("Pioche"), gbc);
         	
 
-        
         afficherMain(maPartie.getJoueurCourant().getCartes());	
 		
+        
+        statusBarLabel = new JLabel("Bienvenue !!");
+        conteneurStatusBar.add(statusBarLabel);
+        conteneurTotal.add(conteneurMilieu,BorderLayout.CENTER);
+        conteneurTotal.add(conteneurStatusBar,BorderLayout.PAGE_END);
+        //this.add(new JScrollPane(conteneurMilieu));
         this.setVisible(true);
         
 		
@@ -115,7 +129,7 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
             	b.addActionListener(new BoutonCarteListener());
             	lBoutonCarte.add(b);
             }
-            this.add(b, gbc);
+            conteneurMilieu.add(b, gbc);
             i++; 
         }
         
@@ -124,25 +138,33 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         for(;i<lBoutonCarte.size(); i++){
 	        gbc.gridx = i;
 	        gbc.gridy = 4;
-            this.remove(lBoutonCarte.get(i));
+            conteneurMilieu.remove(lBoutonCarte.get(i));
             
         }
 	}
 	
 	
 	public void update(){
+		super.repaint();
 		if(!maPartie.getEnMarche())
 			return;
-		super.repaint();
 		System.out.println(maPartie.getPile().getHautDePile().getH());
+		this.updateStatusBar();
 		maPartie.gestionDuJeu();//On s'occupe de la mise a jour du modèle
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
 		afficherMain(maPartie.getJoueurCourant().getCartes());//on affiche le jeu
 		super.repaint();
+		if(!maPartie.getJoueurCourant().isEtat()){
+			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
+			update();
+		}
 		
 	}
 	
+	public void updateStatusBar(){
+		statusBarLabel.setText(maPartie.getMessageActuel());//+" | "+statusBarLabel.getText()
+	}
 	public void updateJoueursCouleurs(){		
 		//On remet d'abord en noir tout les labels des joueurs
 		for (JLabel label : lJLabel)
@@ -165,16 +187,17 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         	
         	System.out.println("Carte : " + c.getS() + "|" + c.getH());
         	
-        	//Carte est jouable ?
+        	//Carte est jouable et il peut jouer ?
         	if(maPartie.getJoueurCourant().
-        	jouerCarte(c, maPartie.getPile().getHautDePile(), maPartie.getNbAs())){
+        	jouerCarte(c, maPartie.getPile().getHautDePile(), maPartie.getNbAs())
+        	&&
+        	maPartie.getJoueurCourant().isEtat()){
         		//Une carte spéciale qui peut nous faire choisir la couleur ?
         		if (c.getH()==8 || c.getS()==JOKER){
         			CarteSpeciale cs = new CarteSpeciale(c.getH(), c.getS());
         			cs.setCouleurChoisie(new ChoixCouleur((JFrame)getFenetre()).getCouleur());
         			maPartie.analyserPassage(cs);
-        		}
-        		else
+        		}else
         			maPartie.analyserPassage(c);
         		update();
         	}
@@ -191,6 +214,7 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         		return;
         	//On le fait piocher que s'il n'a aucune carte jouable.
         	maPartie.getJoueurCourant().recevoirCarte(maPartie.getPioche().piocherCarte());
+        	maPartie.analyserPassage(new Carte(-1, -1));
         	update();
         }
         

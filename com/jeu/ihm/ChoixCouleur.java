@@ -36,13 +36,16 @@ public class ChoixCouleur extends JDialog{
     public int getCouleur(){
         return couleur;
     }
+	public void destroyDialog(){
+		this.dispose();
+	}
     
     
     class BoutonCarteListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             BoutonCarte b = (BoutonCarte) arg0.getSource();
             couleur = b.getCarte().getS();
-            setVisible(false);
+            destroyDialog();
         }
     }
 

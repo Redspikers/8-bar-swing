@@ -77,16 +77,15 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	public void gestionDuJeu(){
 		
 		System.out.println("\n");
-		Messages.Message_Info = 0;
+		Message_Info = 0;
 		
-		Carte c;
 		Joueur jCourant = getJoueurCourant();
 		if (jCourant instanceof Virtuel){
 			jCourant.jouer(maPile.getHautDePile(), this.nbAs);
 		}
 		jCourant.setEtat(true);
 		this.changerDeJoueur();
-		System.out.println(""+MESSAGE[Message_Info]);
+		System.out.println(""+getMessageActuel());
 		if (isVictoire())
 				enMarche = false;
 	}
@@ -117,7 +116,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	}
 	public void changerDeJoueur(){
 		//Calcule l'indice du joueur suivant après la fin du tour du joueur actuel.
-		this.numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+		this.numJoueurCourant = getNumJoueurSuivant();
 	}
 public void analyserPassage(Carte c){
 		//Cette fonction reçoit la carte qui vient d'être jouée (c)
@@ -184,7 +183,7 @@ public void analyserPassage(Carte c){
 			debut = false;
 			return this.getJoueurCourant();
 		}
-		return mesJoueurs.get((sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs);
+		return mesJoueurs.get(getNumJoueurSuivant());
 	}
 	
 
@@ -253,7 +252,15 @@ public void analyserPassage(Carte c){
 	public int getNumJoueurCourant(){
 		return this.numJoueurCourant;
 	}
-	
+	public int getNumJoueurSuivant(){
+		int res = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant-1)%nbJoueurs;
+		if (res<0)
+			return nbJoueurs-1;
+		return res;
+	}
+	public String getMessageActuel(){
+		return MESSAGE[Message_Info];
+	}
 	public Joueur getJoueur(int id){
 		Joueur leJoueur = null;
 		for(Joueur monJoueur : mesJoueurs){
