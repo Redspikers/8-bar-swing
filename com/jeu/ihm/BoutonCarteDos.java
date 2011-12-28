@@ -24,6 +24,18 @@ public class BoutonCarteDos extends JButton implements MouseListener{
         this.setMaximumSize(new Dimension(768, 1063));
 	}
 	
+	public BoutonCarteDos(String s){
+		super(s);
+		img = new ImageIcon("cartes/back.png").getImage();
+		this.addMouseListener(this);
+        this.setFocusPainted(false);
+        this.setBorderPainted(false);
+        this.setContentAreaFilled(false);
+        this.setPreferredSize(new Dimension(78, 106));
+        this.setMinimumSize(new Dimension(78, 106));
+        this.setMaximumSize(new Dimension(768, 1063));
+	}
+	
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this); 

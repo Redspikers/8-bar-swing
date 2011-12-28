@@ -18,6 +18,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	//Le déroulement est croissant (joueur0 puis joueur1 puis ...) au début mais peut s'inverser.
 	private boolean sensCroissant; 
 	private boolean debut;
+	boolean enMarche;
 	
 	public static Scanner in = new Scanner(System.in);
 	
@@ -43,6 +44,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		this.numJoueurCourant = 0;
 		this.sensCroissant = true;
 		this.debut = true;
+		this.enMarche = true;
 		this.nbAs = 0;
 		this.mesJoueurs = new ArrayList<Joueur>();
 		
@@ -68,11 +70,28 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		//ICI on va retourner la bergère.
 		analyserPassage(retournerBergere());
 		
-		//gestionDuJeu();
+		//gestionDuJeuConsole();
 		
 	}
 	
 	public void gestionDuJeu(){
+		
+		System.out.println("\n");
+		Messages.Message_Info = 0;
+		
+		Carte c;
+		Joueur jCourant = getJoueurCourant();
+		if (jCourant instanceof Virtuel){
+			jCourant.jouer(maPile.getHautDePile(), this.nbAs);
+		}
+		jCourant.setEtat(true);
+		this.changerDeJoueur();
+		System.out.println(""+MESSAGE[Message_Info]);
+		if (isVictoire())
+				enMarche = false;
+	}
+	
+	public void gestionDuJeuConsole(){
 		boolean enMarche = true;
 		Carte c;
 		Joueur jCourant;
@@ -225,6 +244,14 @@ public void analyserPassage(Carte c){
 	}	
 	public Pioche getPioche(){
 		return this.maPioche;
+	}
+	
+	public boolean getEnMarche(){
+		return this.enMarche;
+	}
+	
+	public int getNumJoueurCourant(){
+		return this.numJoueurCourant;
 	}
 	
 	public Joueur getJoueur(int id){

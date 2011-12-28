@@ -16,7 +16,6 @@ public class BoutonCarte extends JButton implements MouseListener{
 	protected Image img;
 	
 	public BoutonCarte(Carte c){
-		this.carte = c;
 		this.addMouseListener(this);
         this.setFocusPainted(false);
         this.setBorderPainted(false);
@@ -24,6 +23,7 @@ public class BoutonCarte extends JButton implements MouseListener{
         this.setPreferredSize(new Dimension(78, 106));
         this.setMinimumSize(new Dimension(78, 106));
         this.setMaximumSize(new Dimension(768, 1063));
+        
         this.setCarte(c);
 	}
 	

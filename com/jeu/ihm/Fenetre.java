@@ -1,4 +1,5 @@
 package com.jeu.ihm;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,19 +15,24 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jeu.core.Carte;
 import com.jeu.core.Joueur;
+import com.jeu.core.Messages;
 import com.jeu.core.Partie;
 
 public class Fenetre extends JFrame{
 	
 	private Partie maPartie;
 	private GridBagConstraints gbc = new GridBagConstraints();
+	private GridBagLayout gbl = new GridBagLayout();
+	private ArrayList<BoutonCarte> lBoutonCarte = new ArrayList<BoutonCarte>(); 
+	private ArrayList<JLabel> lJLabel = new ArrayList<JLabel>(); 
 	private BoutonCarte boutonPile;
+	private BoutonCarteDos boutonPioche;
 	
 	public Fenetre(){
 		
 		this.setTitle("Jeu de cartes");
 		this.setMinimumSize(new Dimension(400, 400));
-		this.setSize(800, 550);
+		this.setSize(1020, 550);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -40,24 +46,26 @@ public class Fenetre extends JFrame{
 			e.printStackTrace();
 		}
 		*/
-		this.setLayout(new GridBagLayout());
+		this.setLayout(this.gbl);
 		
-		int nbVirtuels = 1;
-		int nbJoueurs = 3;
-		maPartie = new Partie(nbVirtuels, nbJoueurs);
+		int nbHumains = 2;
+		int nbJoueurs = 2;
+		maPartie = new Partie(nbHumains, nbJoueurs);
 		
-		for(int i=0; i<nbJoueurs; i++){
+		for(int i=0; i<nbJoueurs; i++){ //On ecrit les differents joueurs
 	        gbc.gridx = i;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 1;
 	        gbc.gridwidth = 1;
 	        gbc.anchor = GridBagConstraints.CENTER;
 	        gbc.insets = new Insets(10, 10, 10, 10);
-	        this.add(new BoutonCarteDos(), gbc);
+	        this.add(new BoutonCarteDos("texte"), gbc);
 	        gbc.gridy = 1;
 	        gbc.insets = new Insets(0, 10, 30, 10);
-	        this.add(new JLabel("Joueur " + i), gbc);
+	        lJLabel.add(new JLabel("Joueur " + i));
+	        this.add(lJLabel.get(i), gbc);
 		}
+		updateJoueursCouleurs();
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
@@ -71,7 +79,9 @@ public class Fenetre extends JFrame{
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        this.add(new BoutonCarteDos(), gbc);
+        this.boutonPioche = new BoutonCarteDos();
+        this.boutonPioche.addActionListener(new BoutonPiocheListener());
+        this.add(boutonPioche, gbc);
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 10, 30, 10);
         this.add(new JLabel("Pioche"), gbc);
@@ -85,34 +95,62 @@ public class Fenetre extends JFrame{
 		
 	}
 	
-	public void afficherMain(ArrayList<Carte> c){
-        gbc.insets = new Insets(10, 10, 10, 10);
+	public void afficherMain(ArrayList<Carte> lCartes){
+        gbc.insets = new Insets(0, 0, 0, 0);
         int i=0;
-        for(Carte maCarte : c){
+        BoutonCarte b;
+        for(Carte maCarte : lCartes){
             gbc.gridx = i;
             gbc.gridy = 4;
-            BoutonCarte b = new BoutonCarte(maCarte);
+        	System.out.print(maCarte.getH()+"-");
+
+            
+            //Soit on modifie une carte deja affichée (et instanciée), soit on l'instancie.
+            if (i < lBoutonCarte.size()){
+            	lBoutonCarte.get(i).setCarte(maCarte);
+            	b = lBoutonCarte.get(i);
+            }else{
+            	b = new BoutonCarte(maCarte);
+            	b.addActionListener(new BoutonCarteListener());
+            	lBoutonCarte.add(b);
+            }
             this.add(b, gbc);
-            b.addActionListener(new BoutonCarteListener());
-            i++;
+            i++; 
         }
-        
+        for(;i<lBoutonCarte.size(); i++){
+        	System.out.println("AZAZZAAAA");
+	        gbc.gridx = i;
+	        gbc.gridy = 4;
+            this.remove(lBoutonCarte.get(i));
+            
+        }
 	}
 	
+	
 	public void update(){
+		if(!maPartie.getEnMarche())
+			return;
+		super.repaint();
 		System.out.println(maPartie.getPile().getHautDePile().getH());
-		
+		maPartie.gestionDuJeu();//On s'occupe de la mise a jour du modèle
+		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
-		maPartie.changerDeJoueur(); //On passe la main au joueur suivant
-		
-		//
-		afficherMain(maPartie.getJoueurSuivant().getCartes());
+		afficherMain(maPartie.getJoueurCourant().getCartes());
 		super.repaint();
 		
 	}
 	
+	public void updateJoueursCouleurs(){		
+		//On remet d'abord en noir tout les labels des joueurs
+		for (JLabel label : lJLabel)
+			label.setForeground(Color.BLACK);
+		
+		//On colore en rouge le joueur qui doit jouer
+		lJLabel.get(maPartie.getNumJoueurCourant()).setForeground(Color.red);
+	}
+	
     class BoutonCarteListener implements ActionListener{
-    	 
+   	 
         public void actionPerformed(ActionEvent arg0) {
         	BoutonCarte b = (BoutonCarte) arg0.getSource();
         	System.out.println("Carte : " + b.getCarte().getS() + "|" + b.getCarte().getH());
@@ -121,6 +159,21 @@ public class Fenetre extends JFrame{
         		maPartie.analyserPassage(b.getCarte());
         		update();
         	}
+        }
+        
+    }
+    
+    class BoutonPiocheListener implements ActionListener{
+   	 
+        public void actionPerformed(ActionEvent arg0) {
+        	for(Carte c : maPartie.getJoueurCourant().getCartes()){
+        		//Si le joueur peut jouer au moins une carte, on ne l'autorise pas à piocher
+        		if(maPartie.getJoueurCourant().jouerCarte(c, maPartie.getPile().getHautDePile(), maPartie.getNbAs()))
+        			return;
+        	}
+        	//On le fait piocher.
+        	maPartie.getJoueurCourant().recevoirCarte(maPartie.getPioche().piocherCarte());
+        	update();
         }
         
     }
