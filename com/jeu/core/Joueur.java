@@ -37,6 +37,15 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 		return etat;
 	}
 	
+	public boolean isJeuJouable(Carte hautDePile, int nbAs){
+		//Le joueur a-t-il au moins une carte jouable ?
+		
+		for (Carte c : this.monJeu){
+			if(jouerCarte(c, hautDePile, nbAs))
+				return true;
+		}
+		return false;
+	}
 	public boolean jouerCarte(Carte c, Carte hautDePile, int nbAs) {
 		int[] c_tab    = c.get();
 		int[] pile_tab = hautDePile.get();

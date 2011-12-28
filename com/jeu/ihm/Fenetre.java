@@ -14,11 +14,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jeu.core.Carte;
+import com.jeu.core.CarteSpeciale;
 import com.jeu.core.Joueur;
 import com.jeu.core.Messages;
 import com.jeu.core.Partie;
 
-public class Fenetre extends JFrame{
+public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	
 	private Partie maPartie;
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -117,8 +118,10 @@ public class Fenetre extends JFrame{
             this.add(b, gbc);
             i++; 
         }
+        
+        //On vide les cartes du joueur précédent de l'interface graphique
+        //S'il en avait plus que le joueur actuel.
         for(;i<lBoutonCarte.size(); i++){
-        	System.out.println("AZAZZAAAA");
 	        gbc.gridx = i;
 	        gbc.gridy = 4;
             this.remove(lBoutonCarte.get(i));
@@ -135,7 +138,7 @@ public class Fenetre extends JFrame{
 		maPartie.gestionDuJeu();//On s'occupe de la mise a jour du modèle
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
-		afficherMain(maPartie.getJoueurCourant().getCartes());
+		afficherMain(maPartie.getJoueurCourant().getCartes());//on affiche le jeu
 		super.repaint();
 		
 	}
@@ -149,14 +152,30 @@ public class Fenetre extends JFrame{
 		lJLabel.get(maPartie.getNumJoueurCourant()).setForeground(Color.red);
 	}
 	
+	public Fenetre getFenetre(){
+		return this;
+	}
+	
     class BoutonCarteListener implements ActionListener{
-   	 
+   	 	
+    	//Lors d'un clic sur une carte du jeu d'un joueur.
         public void actionPerformed(ActionEvent arg0) {
-        	BoutonCarte b = (BoutonCarte) arg0.getSource();
-        	System.out.println("Carte : " + b.getCarte().getS() + "|" + b.getCarte().getH());
-        	if(maPartie.getJoueurCourant().jouerCarte(b.getCarte(), maPartie.getPile().getHautDePile(), maPartie.getNbAs())){
-        		System.out.println("YEAH");
-        		maPartie.analyserPassage(b.getCarte());
+        	//Carte sur laquelle on a cliqué
+        	Carte c = ((BoutonCarte)arg0.getSource()).getCarte();
+        	
+        	System.out.println("Carte : " + c.getS() + "|" + c.getH());
+        	
+        	//Carte est jouable ?
+        	if(maPartie.getJoueurCourant().
+        	jouerCarte(c, maPartie.getPile().getHautDePile(), maPartie.getNbAs())){
+        		//Une carte spéciale qui peut nous faire choisir la couleur ?
+        		if (c.getH()==8 || c.getS()==JOKER){
+        			CarteSpeciale cs = new CarteSpeciale(c.getH(), c.getS());
+        			cs.setCouleurChoisie(new ChoixCouleur((JFrame)getFenetre()).getCouleur());
+        			maPartie.analyserPassage(cs);
+        		}
+        		else
+        			maPartie.analyserPassage(c);
         		update();
         	}
         }
@@ -164,14 +183,13 @@ public class Fenetre extends JFrame{
     }
     
     class BoutonPiocheListener implements ActionListener{
-   	 
+   	 	//Lors d'un clic sur la pioche
         public void actionPerformed(ActionEvent arg0) {
-        	for(Carte c : maPartie.getJoueurCourant().getCartes()){
-        		//Si le joueur peut jouer au moins une carte, on ne l'autorise pas à piocher
-        		if(maPartie.getJoueurCourant().jouerCarte(c, maPartie.getPile().getHautDePile(), maPartie.getNbAs()))
-        			return;
-        	}
-        	//On le fait piocher.
+        	Carte hautDePile = maPartie.getPile().getHautDePile();
+        	int nbAs = maPartie.getNbAs();
+        	if(maPartie.getJoueurCourant().isJeuJouable(hautDePile, nbAs))
+        		return;
+        	//On le fait piocher que s'il n'a aucune carte jouable.
         	maPartie.getJoueurCourant().recevoirCarte(maPartie.getPioche().piocherCarte());
         	update();
         }

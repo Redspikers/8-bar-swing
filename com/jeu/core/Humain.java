@@ -21,13 +21,8 @@ public class Humain extends Joueur{
 		boolean carteJouable = false;
 		Carte c;
 		
-		//Le joueur a-t-il au moins une carte jouable ?
-		for (Carte c2 : monJeu){
-			if(jouerCarte(c2, hautDePile, nbAs)){
-				carteJouable = true;break;
-			}
-		}
-		if(!carteJouable){
+
+		if(!super.isJeuJouable(hautDePile, nbAs)){
 			return new Carte(-1, -1);
 		}
 		do{
