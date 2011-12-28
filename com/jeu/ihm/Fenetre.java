@@ -20,6 +20,7 @@ public class Fenetre extends JFrame{
 	
 	private Partie maPartie;
 	private GridBagConstraints gbc = new GridBagConstraints();
+	private BoutonCarte boutonPile;
 	
 	public Fenetre(){
 		
@@ -61,7 +62,8 @@ public class Fenetre extends JFrame{
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        this.add(new BoutonCarte(new Carte(2,7)), gbc);
+        this.boutonPile = new BoutonCarte(maPartie.getPile().getHautDePile());
+        this.add(boutonPile, gbc);
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 10, 30, 10);
         this.add(new JLabel("Pile"), gbc);
@@ -74,19 +76,10 @@ public class Fenetre extends JFrame{
         gbc.insets = new Insets(0, 10, 30, 10);
         this.add(new JLabel("Pioche"), gbc);
         	
-        for(Joueur jo : maPartie.getJoueurs()){
-			jo.addObservateur(new com.jeu.observer.Observateur(){
-				public void update(int id){
-					Joueur leJoueur = maPartie.getJoueur(id);
-					ArrayList<Carte> main = leJoueur.getCartes();
-					afficherMain(main);
-				}
-			});
-		}
+
         
-        for(Joueur jo : maPartie.getJoueurs()){
-			afficherMain(jo.getCartes());	
-		}
+        afficherMain(maPartie.getJoueurCourant().getCartes());	
+		
         this.setVisible(true);
         
 		
@@ -100,18 +93,34 @@ public class Fenetre extends JFrame{
             gbc.gridy = 4;
             BoutonCarte b = new BoutonCarte(maCarte);
             this.add(b, gbc);
-            b.addActionListener(new BoutonListener());
+            b.addActionListener(new BoutonCarteListener());
             i++;
         }
         
 	}
 	
-    class BoutonListener implements ActionListener{
+	public void update(){
+		System.out.println(maPartie.getPile().getHautDePile().getH());
+		
+		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
+		maPartie.changerDeJoueur(); //On passe la main au joueur suivant
+		
+		//
+		afficherMain(maPartie.getJoueurSuivant().getCartes());
+		super.repaint();
+		
+	}
+	
+    class BoutonCarteListener implements ActionListener{
     	 
         public void actionPerformed(ActionEvent arg0) {
         	BoutonCarte b = (BoutonCarte) arg0.getSource();
         	System.out.println("Carte : " + b.getCarte().getS() + "|" + b.getCarte().getH());
-        	
+        	if(maPartie.getJoueurCourant().jouerCarte(b.getCarte(), maPartie.getPile().getHautDePile(), maPartie.getNbAs())){
+        		System.out.println("YEAH");
+        		maPartie.analyserPassage(b.getCarte());
+        		update();
+        	}
         }
         
     }

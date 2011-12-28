@@ -28,6 +28,7 @@ public class BoutonCarte extends JButton implements MouseListener{
 	}
 	
 	public void setCarte(Carte c){
+		this.carte = c;
 		this.img = new ImageIcon("cartes/" + c.getS() + "-" + c.getH() + ".png").getImage();
 	}
 	

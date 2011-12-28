@@ -88,7 +88,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			System.out.println("\nIl joue : " + traduireCarte(c));
 			analyserPassage(c);
 			jCourant.setEtat(true);
-			numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+			this.changerDeJoueur();
 			System.out.println(""+MESSAGE[Message_Info]);
 			if (isVictoire())
 				enMarche = false;
@@ -96,7 +96,10 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		System.out.println("La partie est terminée, on va rejouer.");
 		init(2, 2);
 	}
-	
+	public void changerDeJoueur(){
+		//Calcule l'indice du joueur suivant après la fin du tour du joueur actuel.
+		this.numJoueurCourant = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+	}
 public void analyserPassage(Carte c){
 		//Cette fonction reçoit la carte qui vient d'être jouée (c)
 		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
@@ -105,13 +108,9 @@ public void analyserPassage(Carte c){
 		int i;
 		
 		
-		Joueur jCourant = mesJoueurs.get(numJoueurCourant);
-		Joueur jSuivant = mesJoueurs.get((sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs);
-		if (debut){ //au premier tour, c'est la partie qui retourne la bergère.
-			jCourant = mesJoueurs.get(numJoueurCourant);
-			jSuivant = mesJoueurs.get(numJoueurCourant);
-			debut = false;
-		}
+		Joueur jCourant = getJoueurCourant();
+		Joueur jSuivant = getJoueurSuivant();
+		
 
 		if (c.getH() != -1){ //Si le joueur courant vient de poser une carte
 			maPile.empiler(jCourant.donnerCarte(c));
@@ -157,7 +156,20 @@ public void analyserPassage(Carte c){
 		if (c.getH() != AS)
 			nbAs = 0;
 	}
+
+	public Joueur getJoueurCourant(){
+		return mesJoueurs.get(numJoueurCourant);
+	}
+	public Joueur getJoueurSuivant(){
+		if (debut){ //au premier tour, c'est la partie qui retourne la bergère.
+			debut = false;
+			return this.getJoueurCourant();
+		}
+		return mesJoueurs.get((sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs);
+	}
 	
+
+
 	public boolean isVictoire(){
 		for(Joueur j : mesJoueurs){
 			if(j.getNbCartesJeu() == 0)
@@ -202,7 +214,17 @@ public void analyserPassage(Carte c){
 	}
 	
 	public ArrayList<Joueur> getJoueurs(){
-		return mesJoueurs;
+		return this.mesJoueurs;
+	}
+	
+	public int getNbAs(){
+		return this.nbAs;
+	}
+	public Pile getPile(){
+		return this.maPile;
+	}	
+	public Pioche getPioche(){
+		return this.maPioche;
 	}
 	
 	public Joueur getJoueur(int id){
