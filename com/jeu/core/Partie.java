@@ -81,11 +81,11 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 		Joueur jCourant = getJoueurCourant();
 		if (jCourant instanceof Virtuel){
-			jCourant.jouer(maPile.getHautDePile(), this.nbAs);
+			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
 		}
 		jCourant.setEtat(true);
 		this.changerDeJoueur();
-		System.out.println(""+getMessageActuel());
+		System.out.println(getMessageActuel());
 		if (isVictoire())
 				enMarche = false;
 	}
@@ -118,7 +118,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		//Calcule l'indice du joueur suivant après la fin du tour du joueur actuel.
 		this.numJoueurCourant = getNumJoueurSuivant();
 	}
-public void analyserPassage(Carte c){
+	public void analyserPassage(Carte c){
 		//Cette fonction reçoit la carte qui vient d'être jouée (c)
 		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
 		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)

@@ -26,6 +26,7 @@ import com.jeu.core.Partie;
 
 public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	
+	public static final int TEMPS_VIRTUEL = 1000; //Temps avant de laisser l'IA jouer.
 	private Partie maPartie;
 	private GridBagLayout gbl = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -58,8 +59,8 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 		*/
         this.setContentPane(conteneurTotal);
 		
-		int nbHumains = 4;
-		int nbJoueurs = 4;
+		int nbHumains = 1;
+		int nbJoueurs = 2;
 		maPartie = new Partie(nbHumains, nbJoueurs);
 		
 		for(int i=0; i<nbJoueurs; i++){ //On ecrit les differents joueurs
@@ -107,6 +108,12 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         //this.add(new JScrollPane(conteneurMilieu));
         this.setVisible(true);
         
+        if(maPartie.getJoueurCourant() instanceof com.jeu.core.Virtuel){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {e.printStackTrace();}
+			update();
+        }
 		
 	}
 	
@@ -148,18 +155,27 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 		super.repaint();
 		if(!maPartie.getEnMarche())
 			return;
+		
+		Joueur jCourant;
 		System.out.println(maPartie.getPile().getHautDePile().getH());
 		this.updateStatusBar();
-		maPartie.gestionDuJeu();//On s'occupe de la mise a jour du modèle
+		maPartie.gestionDuJeu();
+		jCourant = maPartie.getJoueurCourant();
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
-		afficherMain(maPartie.getJoueurCourant().getCartes());//on affiche le jeu
+		afficherMain(jCourant.getCartes());//on affiche le jeu
 		super.repaint();
-		if(!maPartie.getJoueurCourant().isEtat()){
+		if(!jCourant.isEtat()){
 			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
 			update();
 		}
-		
+		else if(jCourant instanceof com.jeu.core.Virtuel){
+
+			try {
+				Thread.sleep(TEMPS_VIRTUEL);
+			} catch (InterruptedException e) {e.printStackTrace();}
+			update();
+		}		
 	}
 	
 	public void updateStatusBar(){
