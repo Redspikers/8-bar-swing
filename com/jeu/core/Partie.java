@@ -2,11 +2,12 @@ package com.jeu.core;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
-
+import com.jeu.strategie.*;
 
 public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
 	
-	private static int NB_CARTES_PAR_JOUEUR = 8;
+	private static final int NB_CARTES_PAR_JOUEUR = 8;
+	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
 	private Pioche maPioche;
@@ -21,7 +22,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	boolean enMarche;
 	
 	public static Scanner in = new Scanner(System.in);
-	
+	private ArrayList<Strategie> mesStrategies;
 	private int nbAs;
 	
 	public Partie(int nbH, int nbJ){
@@ -33,6 +34,13 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 		// Création de la pile
 		this.maPile = new Pile();
+		
+		//On enregistre les stratégies à notre disposition
+		//Pour les affecter aux joueurs virtuels
+		this.mesStrategies = new ArrayList<Strategie>();
+		this.mesStrategies.add(new StrategieRandom());
+		this.mesStrategies.add(new StrategieHauteur());
+		
 		
 		init(nbH, nbJ);
 		
@@ -56,11 +64,16 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 		//Création des joueurs 
 		int i;
+		Virtuel v;
 		for(i=0; i<this.nbJoueurs; i++){
 			if(i<this.nbHumains)
 				mesJoueurs.add(new Humain(i));
-			else
-				mesJoueurs.add(new Virtuel(i));
+			else{
+				v = new Virtuel(i);
+				v.setStrategie(this.mesStrategies
+						.get((int)(Math.random()*NOMBRE_STRATEGIES)));
+				mesJoueurs.add(v);
+			}
 		}
 		//Collections.shuffle(mesJoueurs); 
 		

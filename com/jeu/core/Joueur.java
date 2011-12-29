@@ -2,10 +2,8 @@ package com.jeu.core;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import com.jeu.observer.Observable;
-import com.jeu.observer.Observateur;
-
-public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Observable{
+import java.util.Observable;
+public abstract class Joueur extends Observable implements Enums_Interfaces.Symbole, Enums_Interfaces.Hauteur{
 	
 	private int id;
 	protected boolean etat;
@@ -16,7 +14,6 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 	public abstract Carte jouer(Carte hautDePile, int nbAs);
 	public static Scanner in = new Scanner(System.in);
 	
-	private ArrayList<Observateur> listObservateur = new ArrayList<Observateur>();
 	
 	public Joueur(int id){
 		this.id = id;
@@ -53,7 +50,7 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 		if(c_tab[0] == pile_tab[0])
 			return true;//si même hauteur
 		if (hautDePile instanceof CarteSpeciale)
-			couleurEtudiee = ((CarteSpeciale)hautDePile).getCouleurChoisie();
+			couleurEtudiee = ((CarteSpeciale)hautDePile).getSymboleChoisi();
 		else
 			couleurEtudiee = pile_tab[1];
 		if (c_tab[1] == couleurEtudiee && nbAs == 0)//si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
@@ -66,14 +63,12 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 	
 	public boolean recevoirCarte(Carte maCarte) {
 		this.monJeu.add(maCarte);
-		this.updateObservateur();
 		return true;
 	}
 	
 	public Carte donnerCarte() {
 		Random r = new Random();
 		Carte c = this.monJeu.remove(r.nextInt(monJeu.size()));
-		this.updateObservateur();
 		return c;
 	}
 	
@@ -84,7 +79,6 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 				break;
 			}
 		}
-		this.updateObservateur();
 		return c;
 	}
 	
@@ -131,17 +125,8 @@ public abstract class Joueur implements Enums_Interfaces.Hauteur, Enums_Interfac
 		
 	}
 	
-	public void addObservateur(Observateur obs) {
-		this.listObservateur.add(obs);
+	public void notifyVue(){
+		this.setChanged();
+		this.notifyObservers();
 	}
-
-	public void delObservateur() {
-		this.listObservateur = new ArrayList<Observateur>();
-	}
-
-	public void updateObservateur() {
-		for(Observateur obs : this.listObservateur )
-			obs.update(this.id);
-	}
-	
 }

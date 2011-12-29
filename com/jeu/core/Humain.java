@@ -37,7 +37,7 @@ public class Humain extends Joueur{
 		if (hauteur==8 || symbole==JOKER){
 			CarteSpeciale cs = new CarteSpeciale(hauteur, symbole);
 			System.out.print("\nEntrez la couleur choisie : ");
-			cs.setCouleurChoisie(in.nextInt());
+			cs.setSymboleChoisi(in.nextInt());
 			return cs;
 		}
 		

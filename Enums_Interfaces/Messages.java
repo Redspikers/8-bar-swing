@@ -3,7 +3,7 @@ package Enums_Interfaces;
 public interface Messages {
 	public final static String[] MESSAGE = {
 		"", 
-		"Pas de cartes jouables. Vous devez piocher et passer.", 
+		"Pas de cartes jouables. Le joueur doit piocher et passer.", 
 		"Le joueur doit passer son tour.",
 		"Le joueur suivant pioche deux cartes.",
 		"Le joueur suivant reçoit une carte du joueur qui vient de jouer",

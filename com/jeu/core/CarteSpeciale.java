@@ -1,14 +1,14 @@
 package com.jeu.core;
 public class CarteSpeciale extends Carte {
 	
-	private int couleurChoisie; 
+	private int symboleChoisi; 
 	public CarteSpeciale(int h, int s){
 		super(h, s);
 	}
-	public int getCouleurChoisie(){
-		return this.couleurChoisie;
+	public int getSymboleChoisi(){
+		return this.symboleChoisi;
 	}
-	public void setCouleurChoisie(int couleurChoisie){
-		this.couleurChoisie = couleurChoisie;
+	public void setSymboleChoisi(int symboleChoisi){
+		this.symboleChoisi = symboleChoisi;
 	}
 }

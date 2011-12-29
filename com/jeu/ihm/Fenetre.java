@@ -9,6 +9,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Observer;
+import java.util.Observable;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -24,7 +26,9 @@ import com.jeu.core.Joueur;
 import com.jeu.core.Messages;
 import com.jeu.core.Partie;
 
-public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
+
+
+public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteur, Enums_Interfaces.Messages, Enums_Interfaces.Symbole{
 	
 	public static final int TEMPS_VIRTUEL = 1000; //Temps avant de laisser l'IA jouer.
 	private Partie maPartie;
@@ -46,7 +50,6 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 		this.setSize(1020, 550);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		
 
 		/*
 		try {
@@ -63,8 +66,10 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 		int nbJoueurs = 2;
 		maPartie = new Partie(nbHumains, nbJoueurs);
 		
-		for(int i=0; i<nbJoueurs; i++){ //On ecrit les differents joueurs
-	        gbc.gridx = i;
+		int i = 0;
+		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
+			jo.addObserver(this);
+		    gbc.gridx = i;
 	        gbc.gridy = 0;
 	        gbc.gridheight = 1;
 	        gbc.gridwidth = 1;
@@ -75,7 +80,10 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	        gbc.insets = new Insets(0, 10, 30, 10);
 	        lJLabel.add(new JLabel("Joueur " + i));
 	        conteneurMilieu.add(lJLabel.get(i), gbc);
+	        i++;
 		}
+		
+
 		updateJoueursCouleurs();
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
@@ -112,7 +120,7 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {e.printStackTrace();}
-			update();
+			maPartie.getJoueurCourant().notifyVue();
         }
 		
 	}
@@ -151,15 +159,14 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 	}
 	
 	
-	public void update(){
+	public void update(Observable o, Object arg){
 		super.repaint();
 		if(!maPartie.getEnMarche())
 			return;
 		
 		Joueur jCourant;
 		System.out.println(maPartie.getPile().getHautDePile().getH());
-		this.updateStatusBar();
-		maPartie.gestionDuJeu();
+		maPartie.gestionDuJeu();this.updateStatusBar();
 		jCourant = maPartie.getJoueurCourant();
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
@@ -167,19 +174,25 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
 		super.repaint();
 		if(!jCourant.isEtat()){
 			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
-			update();
+			jCourant.notifyVue();
 		}
 		else if(jCourant instanceof com.jeu.core.Virtuel){
 
 			try {
 				Thread.sleep(TEMPS_VIRTUEL);
 			} catch (InterruptedException e) {e.printStackTrace();}
-			update();
+			jCourant.notifyVue();
 		}		
 	}
 	
 	public void updateStatusBar(){
-		statusBarLabel.setText(maPartie.getMessageActuel());//+" | "+statusBarLabel.getText()
+		String couleurDemandee = "Couleur demandée : ";
+		Carte hautDePile = maPartie.getPile().getHautDePile();
+		if(hautDePile.getH() == 8 || hautDePile.getS() == JOKER)
+			couleurDemandee += Symbole[((CarteSpeciale)hautDePile).getSymboleChoisi()];
+		else
+			couleurDemandee += Symbole[hautDePile.getS()];
+		statusBarLabel.setText(couleurDemandee+" | "+maPartie.getMessageActuel());//+" | "+statusBarLabel.getText()
 	}
 	public void updateJoueursCouleurs(){		
 		//On remet d'abord en noir tout les labels des joueurs
@@ -211,11 +224,11 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         		//Une carte spéciale qui peut nous faire choisir la couleur ?
         		if (c.getH()==8 || c.getS()==JOKER){
         			CarteSpeciale cs = new CarteSpeciale(c.getH(), c.getS());
-        			cs.setCouleurChoisie(new ChoixCouleur((JFrame)getFenetre()).getCouleur());
+        			cs.setSymboleChoisi(new ChoixSymbole((JFrame)getFenetre()).getSymbole());
         			maPartie.analyserPassage(cs);
         		}else
         			maPartie.analyserPassage(c);
-        		update();
+        		maPartie.getJoueurCourant().notifyVue();
         	}
         }
         
@@ -229,9 +242,8 @@ public class Fenetre extends JFrame implements Enums_Interfaces.Symbole{
         	if(maPartie.getJoueurCourant().isJeuJouable(hautDePile, nbAs))
         		return;
         	//On le fait piocher que s'il n'a aucune carte jouable.
-        	maPartie.getJoueurCourant().recevoirCarte(maPartie.getPioche().piocherCarte());
         	maPartie.analyserPassage(new Carte(-1, -1));
-        	update();
+        	maPartie.getJoueurCourant().notifyVue();
         }
         
     }
