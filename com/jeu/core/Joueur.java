@@ -129,4 +129,9 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 		this.setChanged();
 		this.notifyObservers();
 	}
+	
+	public void direCarte(){
+		if(monJeu.size() <= 2)
+			this.disCarte = true;
+	}
 }

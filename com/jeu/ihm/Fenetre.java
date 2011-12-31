@@ -2,7 +2,6 @@ package com.jeu.ihm;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,18 +11,15 @@ import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Observable;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jeu.core.Carte;
 import com.jeu.core.CarteSpeciale;
 import com.jeu.core.Joueur;
-import com.jeu.core.Messages;
 import com.jeu.core.Partie;
 
 
@@ -75,10 +71,12 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	        gbc.gridwidth = 1;
 	        gbc.anchor = GridBagConstraints.CENTER;
 	        gbc.insets = new Insets(10, 10, 10, 10);
-	        conteneurMilieu.add(new BoutonCarteDos(), gbc);
+	        BoutonCarteJoueur boutonJoueur = new BoutonCarteJoueur(i);
+	        boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
+	        conteneurMilieu.add(boutonJoueur, gbc);
 	        gbc.gridy = 1;
 	        gbc.insets = new Insets(0, 10, 30, 10);
-	        lJLabel.add(new JLabel("Joueur " + i));
+	        lJLabel.add(new JLabel("Joueur " + i + " (8)"));
 	        conteneurMilieu.add(lJLabel.get(i), gbc);
 	        i++;
 		}
@@ -182,7 +180,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 				Thread.sleep(TEMPS_VIRTUEL);
 			} catch (InterruptedException e) {e.printStackTrace();}
 			jCourant.notifyVue();
-		}		
+		}
+		
+		
+		lJLabel.get(((Joueur) o).getId()).setText("Joueur " + ((Joueur) o).getId() + " (" + ((Joueur) o).getNbCartesJeu() + ")");		
 	}
 	
 	public void updateStatusBar(){
@@ -244,6 +245,21 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         	//On le fait piocher que s'il n'a aucune carte jouable.
         	maPartie.analyserPassage(new Carte(-1, -1));
         	maPartie.getJoueurCourant().notifyVue();
+        }
+        
+    }
+    
+    class BoutonCarteJoueurListener implements ActionListener{
+   	 	//Lors d'un clic sur un Joueur
+        public void actionPerformed(ActionEvent arg0) {
+        	int joueurID = ((BoutonCarteJoueur) arg0.getSource()).getJoueurID();
+        	if(maPartie.getJoueurCourant().getId() != joueurID){
+        		// Code lorsqu'un joueur a denonce un autre joueur
+        		System.out.println("Denonce !");
+        	}else{
+        		// Code lorsqu'un joueur dit "Carte"
+        		maPartie.getJoueurCourant().direCarte();
+        	}
         }
         
     }

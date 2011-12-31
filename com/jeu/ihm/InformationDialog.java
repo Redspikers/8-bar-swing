@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import com.jeu.core.Carte;
-import com.jeu.ihm.ChoixCouleur.BoutonCarteListener;
+import com.jeu.ihm.ChoixSymbole.BoutonCarteListener;
 
 public class InformationDialog extends JDialog {
 	public InformationDialog(JFrame parent, String message){
