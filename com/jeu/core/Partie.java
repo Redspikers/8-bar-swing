@@ -6,7 +6,7 @@ import com.jeu.strategie.*;
 
 public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
 	
-	private static final int NB_CARTES_PAR_JOUEUR = 8;
+	private static final int NB_CARTES_PAR_JOUEUR = 3;
 	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
@@ -283,6 +283,22 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			}
 		}
 		return leJoueur;
+	}
+	
+	public boolean denoncier(int joueurDenonciateur, int joueurDenoncie){
+		Joueur leJoueurDenonciateur = getJoueur(joueurDenonciateur);
+		Joueur leJoueurDenoncie     = getJoueur(joueurDenoncie);
+
+		if((leJoueurDenoncie.getNbCartesJeu() < 2) && (!leJoueurDenoncie.aDitCarte())){
+			leJoueurDenoncie.recevoirCarte(maPioche.piocherCarte());
+			leJoueurDenoncie.recevoirCarte(maPioche.piocherCarte());
+			return true;
+		}else{
+			leJoueurDenonciateur.recevoirCarte(maPioche.piocherCarte());
+			leJoueurDenonciateur.recevoirCarte(maPioche.piocherCarte());
+			return false;
+		}
+		
 	}
 
 }

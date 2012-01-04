@@ -63,6 +63,8 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 	
 	public boolean recevoirCarte(Carte maCarte) {
 		this.monJeu.add(maCarte);
+		if(this.getNbCartesJeu() > 2)
+			this.disCarte = false;
 		return true;
 	}
 	
@@ -133,5 +135,9 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 	public void direCarte(){
 		if(monJeu.size() <= 2)
 			this.disCarte = true;
+	}
+	
+	public boolean aDitCarte(){
+		return disCarte;
 	}
 }

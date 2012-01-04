@@ -57,10 +57,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		}
 		*/
         this.setContentPane(conteneurTotal);
-		
-		int nbHumains = 1;
-		int nbJoueurs = 2;
-		maPartie = new Partie(nbHumains, nbJoueurs);
+        
+        
+        FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
+        maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
 		
 		int i = 0;
 		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
@@ -164,18 +164,16 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		
 		Joueur jCourant;
 		System.out.println(maPartie.getPile().getHautDePile().getH());
-		maPartie.gestionDuJeu();this.updateStatusBar();
+		maPartie.gestionDuJeu();
+		this.updateGraphique();
 		jCourant = maPartie.getJoueurCourant();
-		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
-		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
-		afficherMain(jCourant.getCartes());//on affiche le jeu
-		super.repaint();
-		if(!jCourant.isEtat()){
+		
+		if(maPartie.isVictoire()){
+			new InformationDialog(getFenetre(), "NYANNYAN");
+		} else if(!jCourant.isEtat()){
 			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
 			jCourant.notifyVue();
-		}
-		else if(jCourant instanceof com.jeu.core.Virtuel){
-
+		}else if(jCourant instanceof com.jeu.core.Virtuel){
 			try {
 				Thread.sleep(TEMPS_VIRTUEL);
 			} catch (InterruptedException e) {e.printStackTrace();}
@@ -183,9 +181,15 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		}
 		
 		
-		lJLabel.get(((Joueur) o).getId()).setText("Joueur " + ((Joueur) o).getId() + " (" + ((Joueur) o).getNbCartesJeu() + ")");		
+		lJLabel.get(((Joueur) o).getId()).setText("Joueur " + ((Joueur) o).getId() + " (" + ((Joueur) o).getNbCartesJeu() + ")");		super.repaint();
 	}
 	
+	public void updateGraphique(){
+		this.updateStatusBar();
+		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
+		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
+		afficherMain(maPartie.getJoueurCourant().getCartes());//on affiche le jeu
+	}
 	public void updateStatusBar(){
 		String couleurDemandee = "Couleur demandée : ";
 		Carte hautDePile = maPartie.getPile().getHautDePile();
@@ -253,13 +257,21 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
    	 	//Lors d'un clic sur un Joueur
         public void actionPerformed(ActionEvent arg0) {
         	int joueurID = ((BoutonCarteJoueur) arg0.getSource()).getJoueurID();
-        	if(maPartie.getJoueurCourant().getId() != joueurID){
+        	Joueur jCourant = maPartie.getJoueurCourant();
+        	if(jCourant.getId() != joueurID){
         		// Code lorsqu'un joueur a denonce un autre joueur
-        		System.out.println("Denonce !");
+        		System.out.println("Joueur " + jCourant.getId() + " denonce le Joueur " + joueurID);
+        		if(maPartie.denoncier(jCourant.getId(), joueurID)){
+        			new InformationDialog(getFenetre(), "Le Joueur "+ joueurID + " se prend deux cartes car il a ete denonce.");
+        		}else{
+        			new InformationDialog(getFenetre(), "Le Joueur "+ jCourant.getId() + " se prend deux cartes car il a denonce de travers.");
+        		}
+        		
         	}else{
         		// Code lorsqu'un joueur dit "Carte"
-        		maPartie.getJoueurCourant().direCarte();
+        		jCourant.direCarte();
         	}
+        	afficherMain(jCourant.getCartes());//on affiche le jeu
         }
         
     }

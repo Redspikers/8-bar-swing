@@ -15,14 +15,14 @@ import com.jeu.ihm.ChoixSymbole.BoutonCarteListener;
 public class InformationDialog extends JDialog {
 	public InformationDialog(JFrame parent, String message){
 		super(parent, "Message d'information", true);
-        this.setSize(400, 100);
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(parent);
         this.setResizable(false);
         this.setLayout(new BorderLayout());
 		this.add(new JLabel("   "+message), BorderLayout.CENTER);
 		JButton b = new JButton("OK");
         b.addActionListener(new OKListener());
         this.add(b, BorderLayout.SOUTH);
+        this.pack();
 		this.setVisible(true);
 	}
 	
