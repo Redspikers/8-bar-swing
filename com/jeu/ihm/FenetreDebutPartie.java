@@ -24,7 +24,7 @@ public class FenetreDebutPartie extends JDialog{
     
     public FenetreDebutPartie(JFrame parent){
         super(parent, "Choix des parametres", true);
-        this.setSize(300, 190);
+        this.setSize(300, 170);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
         

@@ -26,7 +26,7 @@ import com.jeu.core.Partie;
 
 public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteur, Enums_Interfaces.Messages, Enums_Interfaces.Symbole{
 	
-	public static final int TEMPS_VIRTUEL = 1000; //Temps avant de laisser l'IA jouer.
+	public static final int TEMPS_VIRTUEL = 10; //Temps avant de laisser l'IA jouer.
 	private Partie maPartie;
 	private GridBagLayout gbl = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
@@ -59,30 +59,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         this.setContentPane(conteneurTotal);
         
         
-        FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
-        maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
+        this.initPartie();
 		
-		int i = 0;
-		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
-			jo.addObserver(this);
-		    gbc.gridx = i;
-	        gbc.gridy = 0;
-	        gbc.gridheight = 1;
-	        gbc.gridwidth = 1;
-	        gbc.anchor = GridBagConstraints.CENTER;
-	        gbc.insets = new Insets(10, 10, 10, 10);
-	        BoutonCarteJoueur boutonJoueur = new BoutonCarteJoueur(i);
-	        boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
-	        conteneurMilieu.add(boutonJoueur, gbc);
-	        gbc.gridy = 1;
-	        gbc.insets = new Insets(0, 10, 30, 10);
-	        lJLabel.add(new JLabel("Joueur " + i + " (8)"));
-	        conteneurMilieu.add(lJLabel.get(i), gbc);
-	        i++;
-		}
 		
 
-		updateJoueursCouleurs();
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
@@ -103,23 +83,49 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         gbc.insets = new Insets(0, 10, 30, 10);
         conteneurMilieu.add(new JLabel("Pioche"), gbc);
         	
-
-        afficherMain(maPartie.getJoueurCourant().getCartes());	
+	
 		
         
         statusBarLabel = new JLabel("Bienvenue !!");
         conteneurStatusBar.add(statusBarLabel);
         conteneurTotal.add(conteneurMilieu,BorderLayout.CENTER);
         conteneurTotal.add(conteneurStatusBar,BorderLayout.PAGE_END);
-        //this.add(new JScrollPane(conteneurMilieu));
+        this.updateGraphique();
         this.setVisible(true);
-        
+
+        //Si c'est au CPU de commencer, on attend aucun evenement graphique !
         if(maPartie.getJoueurCourant() instanceof com.jeu.core.Virtuel){
 			try {
-				Thread.sleep(500);
+				Thread.sleep(TEMPS_VIRTUEL);
 			} catch (InterruptedException e) {e.printStackTrace();}
 			maPartie.getJoueurCourant().notifyVue();
         }
+
+		
+	}
+	
+	public void initPartie(){
+		FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
+        this.maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
+        
+        int i = 0;
+		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
+			jo.addObserver(this);
+		    gbc.gridx = i;
+	        gbc.gridy = 0;
+	        gbc.gridheight = 1;
+	        gbc.gridwidth = 1;
+	        gbc.anchor = GridBagConstraints.CENTER;
+	        gbc.insets = new Insets(10, 10, 10, 10);
+	        BoutonCarteJoueur boutonJoueur = new BoutonCarteJoueur(i);
+	        boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
+	        conteneurMilieu.add(boutonJoueur, gbc);
+	        gbc.gridy = 1;
+	        gbc.insets = new Insets(0, 10, 30, 10);
+	        lJLabel.add(new JLabel("Joueur " + i + " (8)"));
+	        conteneurMilieu.add(lJLabel.get(i), gbc);
+	        i++;
+		}
 		
 	}
 	
@@ -165,11 +171,14 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		Joueur jCourant;
 		System.out.println(maPartie.getPile().getHautDePile().getH());
 		maPartie.gestionDuJeu();
-		this.updateGraphique();
 		jCourant = maPartie.getJoueurCourant();
+		this.updateGraphique();
+
 		
 		if(maPartie.isVictoire()){
-			new InformationDialog(getFenetre(), "NYANNYAN");
+			new FenetreFinPartie(getFenetre());
+			updateGraphique();
+			return;
 		} else if(!jCourant.isEtat()){
 			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
 			jCourant.notifyVue();
@@ -180,15 +189,20 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			jCourant.notifyVue();
 		}
 		
-		
-		lJLabel.get(((Joueur) o).getId()).setText("Joueur " + ((Joueur) o).getId() + " (" + ((Joueur) o).getNbCartesJeu() + ")");		super.repaint();
+				
 	}
 	
 	public void updateGraphique(){
+		Joueur jCourant = this.maPartie.getJoueurCourant();
+		Joueur jSuivant = this.maPartie.getJoueurSuivant();
 		this.updateStatusBar();
+		//On met a jour le nombre de carte de chaque joueur
+		lJLabel.get(jCourant.getId()).setText("Joueur " + jCourant.getId() + " (" + jCourant.getNbCartesJeu() + ")");
+		lJLabel.get(jSuivant.getId()).setText("Joueur " + jSuivant.getId() + " (" + jSuivant.getNbCartesJeu() + ")");
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
-		afficherMain(maPartie.getJoueurCourant().getCartes());//on affiche le jeu
+		afficherMain(jCourant.getCartes());//on affiche le jeu
+		super.repaint();
 	}
 	public void updateStatusBar(){
 		String couleurDemandee = "Couleur demandée : ";
@@ -210,6 +224,14 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	
 	public Fenetre getFenetre(){
 		return this;
+	}
+	
+	public void destroyFenetre(){
+		this.dispose();
+	}
+	
+	public Partie getPartie(){
+		return this.maPartie;
 	}
 	
     class BoutonCarteListener implements ActionListener{
@@ -270,8 +292,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         	}else{
         		// Code lorsqu'un joueur dit "Carte"
         		jCourant.direCarte();
+        		maPartie.setMessageActuel(DIT_CARTE);
         	}
-        	afficherMain(jCourant.getCartes());//on affiche le jeu
+        	updateGraphique();
         }
         
     }
