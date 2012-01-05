@@ -6,7 +6,7 @@ import com.jeu.strategie.*;
 
 public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
 	
-	private static final int NB_CARTES_PAR_JOUEUR = 3;
+	private static final int NB_CARTES_PAR_JOUEUR = 2;
 	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
@@ -93,10 +93,12 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		Message_Info = 0;
 		
 		Joueur jCourant = getJoueurCourant();
+		jCourant.finiDireCarte();
 		if (jCourant instanceof Virtuel){
 			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
 		}
 		jCourant.setEtat(true);
+		
 		this.changerDeJoueur();
 		System.out.println(getMessageActuel());
 		if (isVictoire())
@@ -177,6 +179,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				for(i=0; i<2*this.nbAs; i++)
 					jCourant.recevoirCarte(maPioche.piocherCarte());
 				Message_Info = POSE_AS;
+				this.nbAs = 0;
 			}
 			else if(jCourant.etat){ //S'il n'a pas jouÃ© car il ne pouvait pas poser, il pioche !
 				Message_Info = AUCUNE_CARTE_JOUABLE;
@@ -198,7 +201,9 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		}
 		return mesJoueurs.get(getNumJoueurSuivant());
 	}
-	
+	 public void setEnMarche(boolean enMarche){
+		 this.enMarche = enMarche;
+	 }
 
 
 	public boolean isVictoire(){
@@ -273,6 +278,10 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	}
 	public String getMessageActuel(){
 		return MESSAGE[Message_Info];
+	}
+	
+	public void setMessageActuel(int messageID){
+		Message_Info = messageID;
 	}
 	public Joueur getJoueur(int id){
 		Joueur leJoueur = null;

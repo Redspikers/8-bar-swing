@@ -10,7 +10,8 @@ public interface Messages {
 		"Le joueur a changé la couleur",
 		"On change le sens du jeu",
 		"Le joueur suivant pioche deux fois le nombre d'as qui ont été joués.",
-		"Le joueur a changé la couleur et le joueur suivant se prend 4 cartes."};
+		"Le joueur a changé la couleur et le joueur suivant se prend 4 cartes.",
+		"Le joueur courant a dit carte."};
 	
 	public final static int AUCUNE_CARTE_JOUABLE  = 1;
 	public final static int DOIT_PASSER           = 2;
@@ -20,4 +21,5 @@ public interface Messages {
 	public final static int POSE_10 			  = 6;
 	public final static int POSE_AS               = 7;
 	public final static int POSE_JOKER            = 8;
+	public final static int DIT_CARTE             = 9;
 }

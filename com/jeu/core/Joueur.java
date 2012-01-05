@@ -55,8 +55,8 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 			couleurEtudiee = pile_tab[1];
 		if (c_tab[1] == couleurEtudiee && nbAs == 0)//si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
 			return true;
-		  //Si on veut jouer un 8 ou joker derriere autre chose qu'un as
-		if((c_tab[0]==8 || c_tab[1]==JOKER) && pile_tab[0] != AS)
+		  //Si on veut jouer un 8 ou joker derriere autre chose qu'un as et que c'est pas sa dernière carte.
+		if((c_tab[0]==8 || c_tab[1]==JOKER) && pile_tab[0] != AS && this.getNbCartesJeu() > 1)
 		  return true;
 		return false;
 	}
@@ -101,6 +101,22 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 		return monJeu;
 	}
 	
+	public int calculPoints(){
+		int score = 0;
+		for(Carte c: this.monJeu){
+			switch(c.getH()){
+			case JOKER_H: score+=50; break;
+			case 8:       score+=32; break;
+			case AS:      score+=20; break;
+			case ROI:
+			case DAME:
+			case VALET:   score+=10; break;
+			default:      score+=c.getH();
+			}
+		}
+		return score;
+	}
+	
 	protected boolean inJeu(Carte c){
 		//La carte c est-il dans monJeu ?
 		//C à dire : Existe-t-il une carte dans monJeu
@@ -127,6 +143,8 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 		
 	}
 	
+
+	
 	public void notifyVue(){
 		this.setChanged();
 		this.notifyObservers();
@@ -135,6 +153,10 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 	public void direCarte(){
 		if(monJeu.size() <= 2)
 			this.disCarte = true;
+	}
+	
+	public void finiDireCarte(){
+		this.disCarte = false;
 	}
 	
 	public boolean aDitCarte(){
