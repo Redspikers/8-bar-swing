@@ -26,7 +26,7 @@ public class FenetreDebutPartie extends JDialog{
         super(parent, "Choix des parametres", true);
         this.setSize(300, 170);
         this.setLocationRelativeTo(null);
-        this.setResizable(true);
+        this.setResizable(false);
         
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout gbl = new GridBagLayout();

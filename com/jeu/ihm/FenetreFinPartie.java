@@ -18,9 +18,8 @@ public class FenetreFinPartie extends JDialog implements Enums_Interfaces.Hauteu
     
 	public FenetreFinPartie(JFrame parent){
         super(parent, "Fin de la partie", true);
-        //this.setSize(300, 170);
         this.setLocationRelativeTo(null);
-        this.setResizable(true);
+        this.setResizable(false);
         GridBagConstraints gbc = new GridBagConstraints();
         GridBagLayout gbl = new GridBagLayout();
         this.setLayout(gbl);
