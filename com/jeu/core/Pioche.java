@@ -2,7 +2,7 @@ package com.jeu.core;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Pioche implements Enums_Interfaces.Symbole{
+public class Pioche implements Enums_Interfaces.Symbole, java.io.Serializable{
 	
 	private ArrayList<Carte> cPioche = new ArrayList<Carte>();
 	

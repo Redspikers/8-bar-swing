@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Observable;
-public abstract class Joueur extends Observable implements Enums_Interfaces.Symbole, Enums_Interfaces.Hauteur{
+public abstract class Joueur extends Observable implements Enums_Interfaces.Symbole, Enums_Interfaces.Hauteur, java.io.Serializable{
 	
 	private int id;
 	protected boolean etat;

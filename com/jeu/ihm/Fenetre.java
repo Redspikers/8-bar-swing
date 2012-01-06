@@ -7,6 +7,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Observable;
@@ -27,7 +36,7 @@ import com.jeu.core.Partie;
 public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteur, Enums_Interfaces.Messages, Enums_Interfaces.Symbole{
 	
 	public static final int TEMPS_VIRTUEL = 10; //Temps avant de laisser l'IA jouer.
-	private Partie maPartie;
+	private Partie maPartie = null;
 	private GridBagLayout gbl = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private JPanel conteneurTotal = new JPanel(new BorderLayout());
@@ -46,16 +55,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		this.setSize(1020, 550);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		/*
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+		this.addWindowListener(new WindowsListenerCustom(this));
         this.setContentPane(conteneurTotal);
         
         
@@ -105,8 +105,29 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	}
 	
 	public void initPartie(){
-		FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
-        this.maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
+
+		
+		
+		// Lecture de l'objet sauvegardé s'il existe
+		FileInputStream f_in = null;
+		ObjectInputStream obj_in = null;
+		try {
+			f_in = new FileInputStream("sauvegarde.8bar");
+			obj_in = new ObjectInputStream (f_in);
+			maPartie = (Partie) obj_in.readObject();
+			File fichier_sauvegarde = new File("sauvegarde.8bar");
+			fichier_sauvegarde.delete(); 
+		} catch (FileNotFoundException e) {		}
+		catch (IOException e) {		}
+		catch (ClassNotFoundException e) {		}
+		
+		//System.out.println(maPartie.getPile().cPile.size());
+		
+		
+		if(maPartie == null){
+			FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
+			maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
+		}
         
         int i = 0;
 		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
@@ -231,7 +252,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	}
 	
 	public Partie getPartie(){
-		return this.maPartie;
+		return maPartie;
 	}
 	
     class BoutonCarteListener implements ActionListener{

@@ -1,12 +1,16 @@
 package com.jeu.core;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Collections;
 import com.jeu.strategie.*;
 
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages{
+public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages, java.io.Serializable{
 	
-	private static final int NB_CARTES_PAR_JOUEUR = 2;
+	private static final int NB_CARTES_PAR_JOUEUR = 5;
 	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
@@ -308,6 +312,36 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			return false;
 		}
 		
+	}
+	
+	public void sauvegarderPartie(){
+		// Write to disk with FileOutputStream
+		FileOutputStream f_out = null;
+		try {
+			f_out = new 
+				FileOutputStream("sauvegarde.8bar");
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		// Write object with ObjectOutputStream
+		ObjectOutputStream obj_out = null;
+		try {
+			obj_out = new
+				ObjectOutputStream(f_out);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		// Write object out to disk
+		try {
+			obj_out.writeObject(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

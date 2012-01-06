@@ -1,6 +1,6 @@
 package com.jeu.core;
 
-public class Carte {
+public class Carte implements java.io.Serializable {
 	//2, 3, 4, ..., 15
 	private int hauteur;
 	

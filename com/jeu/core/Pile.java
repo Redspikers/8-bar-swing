@@ -1,9 +1,9 @@
 package com.jeu.core;
 import java.util.ArrayList;
 
-public class Pile {
+public class Pile implements java.io.Serializable {
 	
-	private static ArrayList<Carte> cPile = new ArrayList<Carte>();
+	public ArrayList<Carte> cPile = new ArrayList<Carte>();
 	
 
 	public Pile(){
