@@ -130,7 +130,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	}
 	
 	public void afficherMain(ArrayList<Carte> lCartes){
-        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.insets = new Insets(10, 10, 10, 10);
         int i=0;
         BoutonCarte b;
         for(Carte maCarte : lCartes){
