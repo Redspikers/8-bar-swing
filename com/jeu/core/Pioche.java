@@ -34,5 +34,15 @@ public class Pioche implements Enums_Interfaces.Symbole, java.io.Serializable{
 		return (Carte) cPioche.remove(0);
 	}
 	
+	public boolean isPiochePresqueVide(){
+		return cPioche.size()<5;
+	}
+	
+	public void retournerPile(Pile pile){
+		Carte hautDePile = pile.getHautDePile();
+		while(pile.size()>0)
+			cPioche.add(pile.depiler());
+		pile.empiler(hautDePile);
+	}
 
 }

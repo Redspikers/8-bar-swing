@@ -47,6 +47,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	private BoutonCarte boutonPile;
 	private BoutonCarteDos boutonPioche;
 	private JLabel statusBarLabel;
+	private JLabel label_jeuJoueur = new JLabel();
 	
 	public Fenetre(){
 		
@@ -73,33 +74,31 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         gbc.insets = new Insets(0, 10, 30, 10);
         conteneurMilieu.add(new JLabel("Pile"), gbc);
         
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(10, 10, 10, 30);
         gbc.gridx = 1;
         gbc.gridy = 2;
         this.boutonPioche = new BoutonCarteDos();
         this.boutonPioche.addActionListener(new BoutonPiocheListener());
         conteneurMilieu.add(boutonPioche, gbc);
         gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.EAST;
         gbc.insets = new Insets(0, 10, 30, 10);
         conteneurMilieu.add(new JLabel("Pioche"), gbc);
-        	
-	
-		
+        gbc.gridx = 2;
+        gbc.gridwidth=8;
+        gbc.insets = new Insets(0, 10, 30, 10);
+        conteneurMilieu.add(label_jeuJoueur, gbc);
+        gbc.gridwidth=1;
+
         
         statusBarLabel = new JLabel("Bienvenue !!");
         conteneurStatusBar.add(statusBarLabel);
-        conteneurTotal.add(conteneurMilieu,BorderLayout.CENTER);
+        conteneurTotal.add(conteneurMilieu,BorderLayout.WEST);
         conteneurTotal.add(conteneurStatusBar,BorderLayout.PAGE_END);
         this.updateGraphique();
         this.setVisible(true);
 
-        //Si c'est au CPU de commencer, on attend aucun evenement graphique !
-        if(maPartie.getJoueurCourant() instanceof com.jeu.core.Virtuel){
-			try {
-				Thread.sleep(TEMPS_VIRTUEL);
-			} catch (InterruptedException e) {e.printStackTrace();}
-			maPartie.getJoueurCourant().notifyVue();
-        }
+        this.lancerCPU();
 
 		
 	}
@@ -117,18 +116,13 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			maPartie = (Partie) obj_in.readObject();
 			File fichier_sauvegarde = new File("sauvegarde.8bar");
 			fichier_sauvegarde.delete(); 
-		} catch (FileNotFoundException e) {		}
-		catch (IOException e) {		}
-		catch (ClassNotFoundException e) {		}
-		
-		//System.out.println(maPartie.getPile().cPile.size());
-		
-		
-		if(maPartie == null){
+		} catch (Exception e) {	
 			FenetreDebutPartie maFenetreDebut = new FenetreDebutPartie(this);	
 			maPartie = new Partie(maFenetreDebut.getNbHumains(), maFenetreDebut.getNbJoueursTotal());
 		}
-        
+		
+		
+		
         int i = 0;
 		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
 			jo.addObserver(this);
@@ -151,13 +145,18 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	}
 	
 	public void afficherMain(ArrayList<Carte> lCartes){
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(10, 10, 10, 0);
         int i=0;
         BoutonCarte b;
+        gbc.gridy = 2;
         for(Carte maCarte : lCartes){
-            gbc.gridx = i;
-            gbc.gridy = 4;
-        	System.out.print(maCarte.getH()+"-");
+        	if(i>=8){
+        	   gbc.gridy = 4;
+        	   gbc.gridx = i-8;
+           } else
+        	   gbc.gridx = i+2;
+           
+           System.out.print(maCarte.getH()+"-");
 
             
             //Soit on modifie une carte deja affichée (et instanciée), soit on l'instancie.
@@ -175,9 +174,13 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         
         //On vide les cartes du joueur précédent de l'interface graphique
         //S'il en avait plus que le joueur actuel.
+        gbc.gridy = 4;
         for(;i<lBoutonCarte.size(); i++){
-	        gbc.gridx = i;
-	        gbc.gridy = 4;
+        	if(i>=8){
+         	   gbc.gridy = 4;
+         	   gbc.gridx = i-8;
+            } else
+         	   gbc.gridx = i+2;
             conteneurMilieu.remove(lBoutonCarte.get(i));
             
         }
@@ -200,13 +203,13 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			new FenetreFinPartie(getFenetre());
 			updateGraphique();
 			return;
-		} else if(!jCourant.isEtat()){
-			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
-			jCourant.notifyVue();
 		}else if(jCourant instanceof com.jeu.core.Virtuel){
 			try {
 				Thread.sleep(TEMPS_VIRTUEL);
 			} catch (InterruptedException e) {e.printStackTrace();}
+			jCourant.notifyVue();
+		} else if(!jCourant.isEtat()){
+			new InformationDialog(getFenetre(), "Le Joueur "+maPartie.getNumJoueurCourant()+" doit passer son tour :'(");
 			jCourant.notifyVue();
 		}
 		
@@ -220,6 +223,8 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		//On met a jour le nombre de carte de chaque joueur
 		lJLabel.get(jCourant.getId()).setText("Joueur " + jCourant.getId() + " (" + jCourant.getNbCartesJeu() + ")");
 		lJLabel.get(jSuivant.getId()).setText("Joueur " + jSuivant.getId() + " (" + jSuivant.getNbCartesJeu() + ")");
+		//On précise quel jeu de quel joueur on est en train de voir
+        label_jeuJoueur.setText("Jeu du joueur "+jCourant.getId());
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
 		this.boutonPile.setCarte(maPartie.getPile().getHautDePile()); //on actualise l'image de la carte sur la pile
 		afficherMain(jCourant.getCartes());//on affiche le jeu
@@ -243,6 +248,15 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		lJLabel.get(maPartie.getNumJoueurCourant()).setForeground(Color.red);
 	}
 	
+	public void lancerCPU(){
+		//Si c'est au CPU de commencer, on attend aucun evenement graphique !
+        if(maPartie.getJoueurCourant() instanceof com.jeu.core.Virtuel){
+			try {
+				Thread.sleep(TEMPS_VIRTUEL);
+			} catch (InterruptedException e) {e.printStackTrace();}
+			maPartie.getJoueurCourant().notifyVue();
+        }
+	}
 	public Fenetre getFenetre(){
 		return this;
 	}
@@ -290,7 +304,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         	if(maPartie.getJoueurCourant().isJeuJouable(hautDePile, nbAs))
         		return;
         	//On le fait piocher que s'il n'a aucune carte jouable.
-        	maPartie.analyserPassage(new Carte(-1, -1));
+        	maPartie.analyserPassage(null);
         	maPartie.getJoueurCourant().notifyVue();
         }
         

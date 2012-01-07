@@ -10,7 +10,7 @@ import com.jeu.strategie.*;
 
 public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages, java.io.Serializable{
 	
-	private static final int NB_CARTES_PAR_JOUEUR = 5;
+	private static final int NB_CARTES_PAR_JOUEUR = 8;
 	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
 	private ArrayList<Joueur> mesJoueurs;
@@ -30,14 +30,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	private int nbAs;
 	
 	public Partie(int nbH, int nbJ){
-		// Création du tableau de joueurs
-		this.mesJoueurs = new ArrayList<Joueur>();
 		
-		// Création de la pioche
-		this.maPioche = new Pioche();
-		
-		// Création de la pile
-		this.maPile = new Pile();
 		
 		//On enregistre les stratégies à notre disposition
 		//Pour les affecter aux joueurs virtuels
@@ -102,7 +95,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			analyserPassage(jCourant.jouer(maPile.getHautDePile(), this.nbAs));
 		}
 		jCourant.setEtat(true);
-		
+		this.verifierPioche();
 		this.changerDeJoueur();
 		System.out.println(getMessageActuel());
 		if (isVictoire())
@@ -149,7 +142,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		Joueur jSuivant = getJoueurSuivant();
 		
 
-		if (c.getH() != -1){ //Si le joueur courant vient de poser une carte
+		if (c != null){ //Si le joueur courant vient de poser une carte
 			maPile.empiler(jCourant.donnerCarte(c));
 			
 			switch(c.getH()){
@@ -176,6 +169,10 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				break;
 			case AS: nbAs++; break;
 			}
+			
+			
+			if (c.getH() != AS)
+				nbAs = 0;
 		}
 		else{
 			Message_Info = DOIT_PASSER;
@@ -191,8 +188,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			}
 		}
 		
-		if (c.getH() != AS)
-			nbAs = 0;
+		
 	}
 
 	public Joueur getJoueurCourant(){
@@ -314,6 +310,12 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 	}
 	
+	public void verifierPioche(){
+		//Si la pioche n'a presque plus de carte, on en prend 
+		//dans la pile qui contient pas mal de cartes.
+		if(maPioche.isPiochePresqueVide())
+			maPioche.retournerPile(maPile);
+	}
 	public void sauvegarderPartie(){
 		// Write to disk with FileOutputStream
 		FileOutputStream f_out = null;

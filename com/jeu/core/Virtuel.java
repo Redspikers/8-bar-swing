@@ -15,7 +15,7 @@ public class Virtuel extends Joueur {
 		Carte carteChoisie; 
 		
 		if(this.etat == false){
-			return new Carte(-1, -1);
+			return null;
 		}
 		
 		
@@ -28,7 +28,7 @@ public class Virtuel extends Joueur {
 		
 		//Le joueur a-t-il au moins une carte jouable ?
 		if(cartesJouables.size() == 0)
-			return new Carte(-1, -1);
+			return null;
 		
 		//On applique la stratégie
 		carteChoisie = this.strategie.choisirCarte(cartesJouables);

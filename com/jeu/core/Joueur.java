@@ -46,31 +46,39 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 	public boolean jouerCarte(Carte c, Carte hautDePile, int nbAs) {
 		int[] c_tab    = c.get();
 		int[] pile_tab = hautDePile.get();
-		int couleurEtudiee;
-		if(c_tab[0] == pile_tab[0])
-			return true;//si même hauteur
+		int symboleEtudie;
+		boolean conditionHuitJoker; //La carte que l'on veut placée est-elle un huit ou un joker ?
+		
 		if (hautDePile instanceof CarteSpeciale)
-			couleurEtudiee = ((CarteSpeciale)hautDePile).getSymboleChoisi();
+			symboleEtudie = ((CarteSpeciale)hautDePile).getSymboleChoisi();
 		else
-			couleurEtudiee = pile_tab[1];
-		if (c_tab[1] == couleurEtudiee && nbAs == 0)//si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
-			return true;
-		  //Si on veut jouer un 8 ou joker derriere autre chose qu'un as et que c'est pas sa dernière carte.
-		if((c_tab[0]==8 || c_tab[1]==JOKER) && pile_tab[0] != AS && this.getNbCartesJeu() > 1)
-		  return true;
+			symboleEtudie = pile_tab[1];
+		
+		
+		//Si on veut jouer un 8 ou joker
+		if(c_tab[0]==8 || c_tab[1]==JOKER){
+			//derriere autre chose qu'un as et que c'est pas sa dernière carte.
+			if(pile_tab[0] != AS && this.getNbCartesJeu() > 1)
+				  return true;
+		} else {
+			if (c_tab[1] == symboleEtudie && nbAs == 0)
+				return true;//si même couleur(symbole) et que le précédent joueur n'a pas posé d'as
+			else if(c_tab[0] == pile_tab[0])
+				return true;//si même hauteur
+		}
 		return false;
 	}
 	
-	public boolean recevoirCarte(Carte maCarte) {
-		this.monJeu.add(maCarte);
-		if(this.getNbCartesJeu() > 2)
-			this.disCarte = false;
-		return true;
+	public void recevoirCarte(Carte maCarte) {
+		if(maCarte != null)
+			this.monJeu.add(maCarte);
 	}
 	
 	public Carte donnerCarte() {
 		Random r = new Random();
-		Carte c = this.monJeu.remove(r.nextInt(monJeu.size()));
+		Carte c = null;
+		if (monJeu.size() != 0)
+			c = this.monJeu.remove(r.nextInt(monJeu.size()));
 		return c;
 	}
 	

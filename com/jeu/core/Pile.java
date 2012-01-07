@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Pile implements java.io.Serializable {
 	
-	public ArrayList<Carte> cPile = new ArrayList<Carte>();
+	private ArrayList<Carte> cPile = new ArrayList<Carte>();
 	
 
 	public Pile(){
@@ -19,6 +19,15 @@ public class Pile implements java.io.Serializable {
 	}
 	public void empiler(Carte c){
 		cPile.add(c);
+	}
+	
+	public Carte depiler(){
+		//Utile lorsque l'on retourne la pile pour en faire une pioche
+		return cPile.remove(cPile.size()-1);
+	}
+	
+	public int size(){
+		return cPile.size();
 	}
 
 

@@ -1,5 +1,4 @@
 package com.jeu.core;
-import com.jeu.observer.Observateur;
 
 
 public class Humain extends Joueur{
@@ -13,7 +12,7 @@ public class Humain extends Joueur{
 	public Carte jouer(Carte hautDePile, int nbAs) {
 		
 		if(this.etat == false){
-			return new Carte(-1, -1);
+			return null;
 		}
 		int hauteur;
 		int symbole;
@@ -23,7 +22,7 @@ public class Humain extends Joueur{
 		
 
 		if(!super.isJeuJouable(hautDePile, nbAs)){
-			return new Carte(-1, -1);
+			return null;
 		}
 		do{
 			System.out.print("Entrez la hauteur : ");hauteur = in.nextInt();

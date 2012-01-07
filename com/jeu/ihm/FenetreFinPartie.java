@@ -76,6 +76,7 @@ public class FenetreFinPartie extends JDialog implements Enums_Interfaces.Hauteu
         public void actionPerformed(ActionEvent arg0) {
         	((Fenetre)getParent()).initPartie();
         	destroyDialog();
+        	((Fenetre)getParent()).lancerCPU();
         }
     }
 

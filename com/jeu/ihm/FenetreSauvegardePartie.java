@@ -38,13 +38,14 @@ public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces
         gbc.gridy++;
         gbc.gridwidth= 1;
         gbc.insets = new Insets(10, 10, 10, 10);
-        JButton bouton_oui = new JButton("Sauver"); 
-        this.add(bouton_oui, gbc);
+        JButton bouton_sauver = new JButton("Sauver"); 
+        this.add(bouton_sauver, gbc);
         gbc.gridx=1;
-        JButton bouton_non = new JButton("Quitter"); 
-        bouton_oui.addActionListener(new bouton_ouiListener());
-        bouton_non.addActionListener(new bouton_nonListener());
-        this.add(bouton_non, gbc);
+        JButton bouton_quitter = new JButton("Quitter sans sauvegarder"); 
+        this.add(bouton_quitter, gbc);
+        bouton_sauver.addActionListener(new bouton_sauverListener());
+        bouton_quitter.addActionListener(new bouton_quitterListener());
+       
         this.pack();
         this.setVisible(true);
     }
@@ -62,16 +63,16 @@ public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces
 		return sauver;
 	}
 
-	class bouton_nonListener implements ActionListener{
+	class bouton_quitterListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             destroyAll();
         }
     }
     
-    class bouton_ouiListener implements ActionListener{
+    class bouton_sauverListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
         	sauver = true;
-        	destroyDialog();
+        	destroyAll();
         }
     }
 

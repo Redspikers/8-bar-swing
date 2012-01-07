@@ -20,7 +20,7 @@ public class FenetreDebutPartie extends JDialog{
     private JComboBox comboJTotal;
     private JComboBox comboHumains;
     private static final String[] tabJTotal = {"2", "3", "4", "5", "6", "7", "8"};
-    private static final String[] tabNbHumains = {"1", "2", "3", "4", "5", "6", "7", "8", "0"};
+    private static final String[] tabNbHumains = {"1", "0", "2", "3", "4", "5", "6", "7", "8"};
     
     public FenetreDebutPartie(JFrame parent){
         super(parent, "Choix des parametres", true);
