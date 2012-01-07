@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -38,10 +39,12 @@ public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces
         gbc.gridy++;
         gbc.gridwidth= 1;
         gbc.insets = new Insets(10, 10, 10, 10);
-        JButton bouton_sauver = new JButton("Sauver"); 
+        JButton bouton_sauver = new JButton("Sauver & quitter"); 
+        bouton_sauver.setIcon(new ImageIcon("images/save.png"));
         this.add(bouton_sauver, gbc);
         gbc.gridx=1;
-        JButton bouton_quitter = new JButton("Quitter sans sauvegarder"); 
+        JButton bouton_quitter = new JButton("Quitter sans sauvegarder");
+        bouton_quitter.setIcon(new ImageIcon("images/exit.png"));
         this.add(bouton_quitter, gbc);
         bouton_sauver.addActionListener(new bouton_sauverListener());
         bouton_quitter.addActionListener(new bouton_quitterListener());

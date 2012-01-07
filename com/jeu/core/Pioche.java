@@ -31,7 +31,7 @@ public class Pioche implements Enums_Interfaces.Symbole, java.io.Serializable{
 
 	public Carte piocherCarte(){
 		//System.out.println("Taille de la pioche : " + maPioche.size());
-		return (Carte) cPioche.remove(0);
+		return cPioche.remove(0);
 	}
 	
 	public boolean isPiochePresqueVide(){

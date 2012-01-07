@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -20,9 +22,14 @@ import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Observable;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -42,8 +49,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	private JPanel conteneurTotal = new JPanel(new BorderLayout());
 	private JPanel conteneurMilieu = new JPanel(gbl);
 	private JPanel conteneurStatusBar = new JPanel();
-	private ArrayList<BoutonCarte> lBoutonCarte = new ArrayList<BoutonCarte>(); 
-	private ArrayList<JLabel> lJLabel = new ArrayList<JLabel>(); 
+	private ArrayList<BoutonCarte>       lBoutonCarte = new ArrayList<BoutonCarte>(); 
+	private ArrayList<BoutonCarteJoueur> lBoutonCarteJoueur = new ArrayList<BoutonCarteJoueur>(); 
+	private ArrayList<JLabel>            lJLabel = new ArrayList<JLabel>(); 
 	private BoutonCarte boutonPile;
 	private BoutonCarteDos boutonPioche;
 	private JLabel statusBarLabel;
@@ -58,12 +66,76 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.addWindowListener(new WindowsListenerCustom(this));
         this.setContentPane(conteneurTotal);
-        
+        this.setIconImage(new ImageIcon(this.getClass().getResource("logo.png")).getImage()); 
         
         this.initPartie();
 		
 		
+        //Création de la barre de menu.
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu, submenu;
+        JMenuItem menuItem;
+        
+        //Menu Actions
+        menu = new JMenu("Actions");
+        menu.setMnemonic(KeyEvent.VK_A);
+        menu.getAccessibleContext().setAccessibleDescription("Pour effectuer une action sur la partie");
+        menuBar.add(menu);
 
+        //Les items du menu Actions
+        menuItem = new JMenuItem("Nouvelle partie", KeyEvent.VK_N);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        menuItem.getAccessibleContext().setAccessibleDescription(
+                "Lance une nouvelle partie");
+        menuItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) { 
+				initPartie();
+				updateGraphique();
+				lancerCPU();}
+		});
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Sauvegarder & Quitter",
+                                 new ImageIcon("images/save.png"));
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        menuItem.setMnemonic(KeyEvent.VK_S);
+        menuItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) { 
+				getPartie().sauvegarderPartie();
+				destroyFenetre();}
+		});
+        menu.add(menuItem);
+        
+        menu.addSeparator();
+        menuItem = new JMenuItem("Quitter sans sauvegarder",
+                new ImageIcon("images/exit.png"));
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_Q);
+		menuItem.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) { destroyFenetre(); }
+		});
+		menu.add(menuItem);
+
+    
+        
+
+        //Menu Aide
+        menu = new JMenu("Aide");
+        menu.setMnemonic(KeyEvent.VK_I);
+        menuBar.add(menu);
+        
+        menuItem = new JMenuItem("A Propos");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(
+		KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		menuItem.setMnemonic(KeyEvent.VK_P);
+		menuItem.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent arg0) { 
+		new FenetreAbout(getFenetre());}
+		});
+		menu.add(menuItem);
 		
 		gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
@@ -93,6 +165,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         
         statusBarLabel = new JLabel("Bienvenue !!");
         conteneurStatusBar.add(statusBarLabel);
+        conteneurTotal.add(menuBar, BorderLayout.NORTH);
         conteneurTotal.add(conteneurMilieu,BorderLayout.WEST);
         conteneurTotal.add(conteneurStatusBar,BorderLayout.PAGE_END);
         this.updateGraphique();
@@ -124,6 +197,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		
 		
         int i = 0;
+        BoutonCarteJoueur boutonJoueur;
 		for(Joueur jo : maPartie.getJoueurs()){//On ecrit les differents joueurs
 			jo.addObserver(this);
 		    gbc.gridx = i;
@@ -132,7 +206,19 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	        gbc.gridwidth = 1;
 	        gbc.anchor = GridBagConstraints.CENTER;
 	        gbc.insets = new Insets(10, 10, 10, 10);
-	        BoutonCarteJoueur boutonJoueur = new BoutonCarteJoueur(i);
+	        
+	        
+	        if (i < lBoutonCarteJoueur.size()){
+            	lBoutonCarteJoueur.get(i).setJoueurID(i);
+            	boutonJoueur = lBoutonCarteJoueur.get(i);
+            	lJLabel.get(i).setText("Joueur " + i + " (8)");
+            }else{
+            	boutonJoueur = new BoutonCarteJoueur(i);
+            	boutonJoueur.addActionListener(new BoutonCarteListener());
+            	lBoutonCarteJoueur.add(boutonJoueur);
+            	lJLabel.add(new JLabel("Joueur " + i + " (8)"));
+            }
+
 	        boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
 	        conteneurMilieu.add(boutonJoueur, gbc);
 	        gbc.gridy = 1;
@@ -141,6 +227,13 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	        conteneurMilieu.add(lJLabel.get(i), gbc);
 	        i++;
 		}
+		
+		//On enleve les cartes représentants chaque joueur de l'ancienne partie,
+		//de l'interface graphique, s'il y en avait plus que pour la partie actuelle
+        for(;i<lBoutonCarteJoueur.size(); i++){
+        	conteneurMilieu.remove(lBoutonCarteJoueur.get(i));
+        	conteneurMilieu.remove(lJLabel.get(i));
+        }
 		
 	}
 	

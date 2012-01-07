@@ -14,7 +14,7 @@ public class BoutonCarteDos extends JButton implements MouseListener{
 	protected Image img;
 	
 	public BoutonCarteDos(){
-		img = new ImageIcon("cartes/back.png").getImage();
+		img = new ImageIcon("images/cartes/back.png").getImage();
 		this.addMouseListener(this);
         this.setFocusPainted(false);
         this.setBorderPainted(false);
@@ -26,7 +26,7 @@ public class BoutonCarteDos extends JButton implements MouseListener{
 	
 	public BoutonCarteDos(String s){
 		super(s);
-		img = new ImageIcon("cartes/back.png").getImage();
+		img = new ImageIcon("images/cartes/back.png").getImage();
 		this.addMouseListener(this);
         this.setFocusPainted(false);
         this.setBorderPainted(false);

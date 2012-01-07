@@ -20,5 +20,9 @@ public class BoutonCarteJoueur extends BoutonCarteDos implements MouseListener{
 	public int getJoueurID(){
 		return this.joueurID;
 	}
+	
+	public void setJoueurID(int ID){
+		this.joueurID = ID;
+	}
 }
 
