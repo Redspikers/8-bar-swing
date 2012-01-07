@@ -4,18 +4,23 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
-import com.jeu.core.Carte;
 import com.jeu.core.Joueur;
 
+/**
+ * Classe créant une fenêtre récapitulant les scores des Joueurs ainsi que le gagnant.
+ * @author Nicolas et Victor
+ * @version 1.0
+ */
 public class FenetreFinPartie extends JDialog implements Enums_Interfaces.Hauteur{
     
+	/**
+	 * Constructeur de la fenêtre affichant les résultats de la Partie
+	 * @param parent La fenêtre parente
+	 */
 	public FenetreFinPartie(JFrame parent){
         super(parent, "Fin de la partie", true);
         this.setLocationRelativeTo(null);
@@ -58,20 +63,36 @@ public class FenetreFinPartie extends JDialog implements Enums_Interfaces.Hauteu
     }
 	
     
+	/**
+	 * Ferme la fenêtre
+	 */
 	public void destroyDialog(){
 		this.dispose();
 	}	
 	
+	/**
+	 * Ferme la fenêtre ainsi que la fenêtre principale du jeu
+	 */
 	public void destroyAll(){
 		((Fenetre)this.getParent()).destroyFenetre();
 	}
     
-    class bouton_nonListener implements ActionListener{
+	/**
+	 * Classe permettant de récupérer le clic sur le JButton "Non"
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
+	class bouton_nonListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             destroyAll();
         }
     }
     
+	/**
+	 * Classe permettant de récupérer le clic sur le JButton "Oui"
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
     class bouton_ouiListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
         	((Fenetre)getParent()).initPartie();

@@ -1,56 +1,55 @@
 package com.jeu.ihm;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import com.jeu.core.Partie;
 
+/**
+ * Classe créant un listener écoutant les évênements se déroulant sur une fenêtre
+ * @author Nicolas et Victor
+ * @version 1.0
+ */
 public class WindowsListenerCustom implements WindowListener{
 	
 	private Fenetre maFenetre;
 	
+	/**
+	 * Constructeur du listener d'évênements
+	 * @param maFenetre La fenêtre à écouter
+	 */
 	public WindowsListenerCustom(Fenetre maFenetre){
 		this.maFenetre = maFenetre; 
 	}
 
-	@Override
 	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	/**
+	 * Méthode appelée lorsque l'utilisateur souhaite fermer la fenêtre
+	 */
 	public void windowClosing(WindowEvent e) {
+		// Appel de la fenêtre demandant la sauvegarde de la Partie
 		FenetreSauvegardePartie f = new FenetreSauvegardePartie(maFenetre);
 		if(f.getSauver())
 			maFenetre.getPartie().sauvegarderPartie();
 	}
 
-	@Override
 	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 

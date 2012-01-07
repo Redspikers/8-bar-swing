@@ -7,12 +7,19 @@ import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-
+/**
+ * Classe permettant de créer un JButton ayant l'aspect d'une carte à jouer retournée
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class BoutonCarteDos extends JButton implements MouseListener{
 
 
 	protected Image img;
 	
+	/**
+	 * Constructeur permettant de créer une carte à jouer retournée
+	 */
 	public BoutonCarteDos(){
 		img = new ImageIcon("images/cartes/back.png").getImage();
 		this.addMouseListener(this);
@@ -24,6 +31,10 @@ public class BoutonCarteDos extends JButton implements MouseListener{
         this.setMaximumSize(new Dimension(768, 1063));
 	}
 	
+	/**
+	 * Constructeur permettant de créer une carte à jouer retournée
+	 * @param s Le texte du JButton
+	 */
 	public BoutonCarteDos(String s){
 		super(s);
 		img = new ImageIcon("images/cartes/back.png").getImage();
@@ -36,7 +47,10 @@ public class BoutonCarteDos extends JButton implements MouseListener{
         this.setMaximumSize(new Dimension(768, 1063));
 	}
 	
-    protected void paintComponent(Graphics g) {
+    /**
+     * Dessine le composant graphique
+     */
+	protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this); 
     }
@@ -47,23 +61,19 @@ public class BoutonCarteDos extends JButton implements MouseListener{
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	
