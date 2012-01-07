@@ -6,15 +6,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-
 import com.jeu.core.Carte;
 
-
+/**
+ * Classe permettant de créer un JButton ayant l'aspect d'une carte à jouer
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class BoutonCarte extends JButton implements MouseListener{
 
 	protected Carte carte;
 	protected Image img;
 	
+	/**
+	 * Constructeur du bouton
+	 * @param c La carte à afficher sur le bouton
+	 */
 	public BoutonCarte(Carte c){
 		this.addMouseListener(this);
         this.setFocusPainted(false);
@@ -27,16 +34,28 @@ public class BoutonCarte extends JButton implements MouseListener{
         this.setCarte(c);
 	}
 	
+	
+	/**
+	 * Setter de la Carte associée
+	 * @param c La Carte à associer au bouton
+	 */
 	public void setCarte(Carte c){
 		this.carte = c;
 		this.img = new ImageIcon("cartes/" + c.getS() + "-" + c.getH() + ".png").getImage();
 	}
 	
+	/**
+	 * Getter de la Carte associée au bouton
+	 * @return La Carte associée au bouton
+	 */
 	public Carte getCarte(){
 		return this.carte;
 	}
 	
-    protected void paintComponent(Graphics g) {
+    /**
+     * Dessine le composant graphique
+     */
+	protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(img, 0, 0, getWidth(), getHeight(), this); 
     }
@@ -47,23 +66,23 @@ public class BoutonCarte extends JButton implements MouseListener{
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	

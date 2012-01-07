@@ -1,18 +1,24 @@
 package com.jeu.ihm;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.jeu.core.Carte;
-import com.jeu.ihm.ChoixSymbole.BoutonCarteListener;
-
+/**
+ * Classe créant une fenêtre de dialogue affichant un texte
+ * @author Nicolas et Victor
+ * @version 1.0
+ */
 public class InformationDialog extends JDialog {
+	
+	/**
+	 * Constructeur de la fenêtre de dialogue
+	 * @param parent La fenêtre parente
+	 * @param message Le message à afficher
+	 */
 	public InformationDialog(JFrame parent, String message){
 		super(parent, "Message d'information", true);
         this.setLocationRelativeTo(parent);
@@ -26,10 +32,18 @@ public class InformationDialog extends JDialog {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Ferme la fenêtre de dialogue
+	 */
 	public void destroyDialog(){
 		this.dispose();
 	}
 	
+	/**
+	 * Classe permettant de récupérer le clic sur le JButton "Ok"
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
     class OKListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             JButton b = (JButton) arg0.getSource();

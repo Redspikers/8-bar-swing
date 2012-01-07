@@ -8,10 +8,19 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import com.jeu.core.Carte;
 
+/**
+ * Classe permettant de créer une fenêtre demandant de choisir le symbole de la prochaine carte
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class ChoixSymbole extends JDialog{
     
     private int symbole;
     
+    /**
+     * Constructeur permettant de créer la fenêtre
+     * @param parent La fenêtre parente
+     */
     public ChoixSymbole(JFrame parent){
         super(parent, "Choix du nouveau symbole", true);
         this.setSize(400, 200);
@@ -33,14 +42,26 @@ public class ChoixSymbole extends JDialog{
         this.setVisible(true);
     }
     
+    /**
+     * Getter de symbole
+     * @return Le prochain symbole à jouer choisi par le joueur
+     */
     public int getSymbole(){
         return symbole;
     }
+    
+    /**
+     * Ferme la fenêtre
+     */
 	public void destroyDialog(){
 		this.dispose();
 	}
     
-    
+	/**
+	 * Classe permettant de récupérer le symbole cliqué
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
     class BoutonCarteListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             BoutonCarte b = (BoutonCarte) arg0.getSource();

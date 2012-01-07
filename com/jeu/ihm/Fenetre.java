@@ -7,32 +7,26 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Observable;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import com.jeu.core.Carte;
 import com.jeu.core.CarteSpeciale;
 import com.jeu.core.Joueur;
 import com.jeu.core.Partie;
 
 
-
+/**
+ * Classe créant la fenêtre principale du jeu où sera dessinée la table de jeu
+ * @author Nicolas et Victor
+ * @version 1.0
+ */
 public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteur, Enums_Interfaces.Messages, Enums_Interfaces.Symbole{
 	
 	public static final int TEMPS_VIRTUEL = 10; //Temps avant de laisser l'IA jouer.
@@ -49,6 +43,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	private JLabel statusBarLabel;
 	private JLabel label_jeuJoueur = new JLabel();
 	
+	/**
+	 * Constructeur appelé pour créer la fenêtre principale
+	 */
 	public Fenetre(){
 		
 		this.setTitle("Jeu de cartes");
@@ -103,6 +100,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		
 	}
 	
+	/**
+	 * Initialise la Partie
+	 */
 	public void initPartie(){
 
 		
@@ -144,6 +144,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		
 	}
 	
+	/**
+	 * Dessine sur le table de jeu la main passée en paramètre
+	 * @param lCartes Cartes à dessiner sur le table de jeu
+	 */
 	public void afficherMain(ArrayList<Carte> lCartes){
         gbc.insets = new Insets(10, 10, 10, 0);
         int i=0;
@@ -186,7 +190,6 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         }
 	}
 	
-	
 	public void update(Observable o, Object arg){
 		super.repaint();
 		if(!maPartie.getEnMarche())
@@ -216,6 +219,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 				
 	}
 	
+	/**
+	 * Met à jour la partie graphique de l'application
+	 */
 	public void updateGraphique(){
 		Joueur jCourant = this.maPartie.getJoueurCourant();
 		Joueur jSuivant = this.maPartie.getJoueurSuivant();
@@ -230,6 +236,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		afficherMain(jCourant.getCartes());//on affiche le jeu
 		super.repaint();
 	}
+	
+	/**
+	 * Met à jour la barre de status en bas de la fenêtre
+	 */
 	public void updateStatusBar(){
 		String couleurDemandee = "Couleur demandée : ";
 		Carte hautDePile = maPartie.getPile().getHautDePile();
@@ -239,6 +249,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			couleurDemandee += Symbole[hautDePile.getS()];
 		statusBarLabel.setText(couleurDemandee+" | "+maPartie.getMessageActuel());//+" | "+statusBarLabel.getText()
 	}
+	
+	/**
+	 * Met à jour la couleur du numéro du Joueur qui est en train de jouer
+	 */
 	public void updateJoueursCouleurs(){		
 		//On remet d'abord en noir tout les labels des joueurs
 		for (JLabel label : lJLabel)
@@ -248,6 +262,9 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		lJLabel.get(maPartie.getNumJoueurCourant()).setForeground(Color.red);
 	}
 	
+	/**
+	 * Méthode appelée lorsque le Joueur qui doit joué n'est pas Humain
+	 */
 	public void lancerCPU(){
 		//Si c'est au CPU de commencer, on attend aucun evenement graphique !
         if(maPartie.getJoueurCourant() instanceof com.jeu.core.Virtuel){
@@ -257,14 +274,26 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			maPartie.getJoueurCourant().notifyVue();
         }
 	}
+	
+	/**
+	 * Getter de Fenetre
+	 * @return La fenêtre de jeu courante
+	 */
 	public Fenetre getFenetre(){
 		return this;
 	}
 	
+	/**
+	 * Quitte la fenêtre de jeu
+	 */
 	public void destroyFenetre(){
 		this.dispose();
 	}
 	
+	/**
+	 * Getter de la Partie associée au jeu en cours
+	 * @return La Partie associée au jeu en cours
+	 */
 	public Partie getPartie(){
 		return maPartie;
 	}
@@ -334,7 +363,10 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
         
     }
 
-
+    /**
+     * Méthode appelée lors du lancement du programme
+     * @param args inutilisé
+     */
 	public static void main(String[] args) {
 		new Fenetre();
 	}

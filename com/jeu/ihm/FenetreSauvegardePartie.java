@@ -4,20 +4,24 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.jeu.core.Carte;
-import com.jeu.core.Joueur;
-
+/**
+ * Classe créant une fenêtre demandant si le joueur souhaite sauvegarder la Partie
+ * @author Nicolas et Victor
+ * @version 1.0
+ */
 public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces.Hauteur{
 	
 	private boolean sauver = false;
     
+	/**
+	 * Consctructeur de la Fenêtre de sauvegarde de la Partie
+	 * @param parent La fenêtre parente
+	 */
 	public FenetreSauvegardePartie(JFrame parent){
         super(parent, "Sauvegarde", true);
         this.setLocationRelativeTo(null);
@@ -51,25 +55,45 @@ public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces
     }
 	
     
+	/**
+	 * Ferme la fenêtre
+	 */
 	public void destroyDialog(){
 		this.dispose();
 	}	
 	
+	/**
+	 * Ferme la fenêtre ainsi que la fenêtre de jeu
+	 */
 	public void destroyAll(){
 		((Fenetre)this.getParent()).destroyFenetre();
 	}
     
+	/**
+	 * Getter de sauver
+	 * @return L'état de sauver
+	 */
 	public boolean getSauver() {
 		return sauver;
 	}
 
+	/**
+	 * Classe permettant de récupérer le clic sur le JButton "Quitter"
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
 	class bouton_quitterListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             destroyAll();
         }
     }
     
-    class bouton_sauverListener implements ActionListener{
+	/**
+	 * Classe permettant de récupérer le clic sur le JButton "Sauver"
+	 * @author Nicolas et Victor
+	 * @version 1.0
+	 */
+	class bouton_sauverListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
         	sauver = true;
         	destroyAll();
