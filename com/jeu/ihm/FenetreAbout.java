@@ -1,6 +1,4 @@
 package com.jeu.ihm;
-
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,14 +7,23 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * Classe permettant de créer une fenêtre "A propos"
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class FenetreAbout extends JDialog {
+	
+	/**
+	 * Constructeur permettant de créer la fenêtre "A propos"
+	 * @param parent La fenêtre parente
+	 */
 	public FenetreAbout(JFrame parent){
 		super(parent, "A propos de 8-Bar Swing", true);
 		this.setLocationRelativeTo(null);
@@ -44,7 +51,7 @@ public class FenetreAbout extends JDialog {
 		this.add(label_nom, gbc);
 		gbc.gridy++;
 		JLabel label_description = new JLabel("<html>8-Bar Swing est un logiciel codé en JAVA avec la bibliothèque graphique Swing." +
-				"<br>C'est un jeu de huit américains créé par <br><table>" +
+				"<br>C'est un jeu de huit américain créé par <br><table>" +
 				"<tr><td>Nicolas LE MANCHET </td><td><i>nicolas.le.manchet@gmail.com</i></td></tr><br>" +
 				"<tr><td>Victor MARTIN </td><td><i>victormartinfr@gmail.com</i></td></tr></table><br>" +
 				"dans le cadre du cours de java de l'UTT (LO02) tutoré par Guillaume DOYEN et Baptiste CABLÉ.<br>" +
@@ -60,6 +67,9 @@ public class FenetreAbout extends JDialog {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Centre la fenêtre sur l'écran
+	 */
 	public void centrer(){
 		Dimension dim = getToolkit().getScreenSize();
 		Rectangle abounds = this.getBounds();
@@ -67,11 +77,20 @@ public class FenetreAbout extends JDialog {
 		      (dim.height - abounds.height) / 2);
 		      
 	}
+	
+	/**
+	 * Ferme la fenêtre
+	 */
 	public void destroyDialog(){
 		this.dispose();
 	}
 	
-    class OKListener implements ActionListener{
+	/**
+	 * Classe permettant d'écouter les clics sur le bouton "OK"
+	 * @author Nicolas et Victor 
+	 * @version 1.0
+	 */
+	class OKListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
             destroyDialog();
         }
