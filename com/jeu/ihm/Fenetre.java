@@ -208,35 +208,32 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	        gbc.gridwidth = 1;
 	        gbc.anchor = GridBagConstraints.CENTER;
 	        gbc.insets = new Insets(10, 10, 10, 10);
-	        
-	        
+
 	        if (i < lBoutonCarteJoueur.size()){
             	lBoutonCarteJoueur.get(i).setJoueurID(i);
             	boutonJoueur = lBoutonCarteJoueur.get(i);
-            	lJLabel.get(i).setText("Joueur " + i + " (8)");
+            	lJLabel.get(i).setText("Joueur " + i + " ("+jo.getNbCartesJeu()+")");
             }else{
             	boutonJoueur = new BoutonCarteJoueur(i);
-            	boutonJoueur.addActionListener(new BoutonCarteListener());
+            	boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
             	lBoutonCarteJoueur.add(boutonJoueur);
-            	lJLabel.add(new JLabel("Joueur " + i + " (8)"));
+            	lJLabel.add(new JLabel("Joueur " + i + " ("+jo.getNbCartesJeu()+")"));
             }
 
-	        boutonJoueur.addActionListener(new BoutonCarteJoueurListener());
 	        conteneurMilieu.add(boutonJoueur, gbc);
 	        gbc.gridy = 1;
 	        gbc.insets = new Insets(0, 10, 30, 10);
-	        lJLabel.add(new JLabel("Joueur " + i + " (8)"));
 	        conteneurMilieu.add(lJLabel.get(i), gbc);
 	        i++;
 		}
 		
+
 		//On enleve les cartes représentants chaque joueur de l'ancienne partie,
 		//de l'interface graphique, s'il y en avait plus que pour la partie actuelle
         for(;i<lBoutonCarteJoueur.size(); i++){
         	conteneurMilieu.remove(lBoutonCarteJoueur.get(i));
         	conteneurMilieu.remove(lJLabel.get(i));
         }
-		
 	}
 	
 	/**
@@ -318,12 +315,12 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	 * Met à jour la partie graphique de l'application
 	 */
 	public void updateGraphique(){
+		Joueur jPrecedent = this.maPartie.getJoueurPrecedent();
 		Joueur jCourant = this.maPartie.getJoueurCourant();
-		Joueur jSuivant = this.maPartie.getJoueurSuivant();
 		this.updateStatusBar();
 		//On met a jour le nombre de carte de chaque joueur
+		lJLabel.get(jPrecedent.getId()).setText("Joueur " + jPrecedent.getId() + " (" + jPrecedent.getNbCartesJeu() + ")");
 		lJLabel.get(jCourant.getId()).setText("Joueur " + jCourant.getId() + " (" + jCourant.getNbCartesJeu() + ")");
-		lJLabel.get(jSuivant.getId()).setText("Joueur " + jSuivant.getId() + " (" + jSuivant.getNbCartesJeu() + ")");
 		//On précise quel jeu de quel joueur on est en train de voir
         label_jeuJoueur.setText("Jeu du joueur "+jCourant.getId());
 		updateJoueursCouleurs();//On met en rouge le joueur qui jouera
@@ -336,7 +333,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 	 * Met à jour la barre de status en bas de la fenêtre
 	 */
 	public void updateStatusBar(){
-		String couleurDemandee = "Couleur demandée : ";
+		String couleurDemandee = "Symbole demandé : ";
 		Carte hautDePile = maPartie.getPile().getHautDePile();
 		if(hautDePile.getH() == 8 || hautDePile.getS() == JOKER)
 			couleurDemandee += Symbole[((CarteSpeciale)hautDePile).getSymboleChoisi()];

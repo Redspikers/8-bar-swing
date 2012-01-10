@@ -143,7 +143,8 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 
 		if (c != null){ //Si le joueur courant vient de poser une carte
-			maPile.empiler(jCourant.donnerCarte(c));
+			if(!debut)
+				maPile.empiler(jCourant.donnerCarte(c));
 			
 			switch(c.getH()){
 			case JOKER_H:
@@ -187,18 +188,21 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				jCourant.recevoirCarte(maPioche.piocherCarte());
 			}
 		}
-		
+		debut = false;
 		
 	}
 
+	public Joueur getJoueurPrecedent(){
+		if (debut) //au premier tour, c'est la partie qui retourne la bergère.
+			return this.getJoueurCourant();
+		return mesJoueurs.get(getNumJoueurPrecedent());
+	}
 	public Joueur getJoueurCourant(){
 		return mesJoueurs.get(numJoueurCourant);
 	}
 	public Joueur getJoueurSuivant(){
-		if (debut){ //au premier tour, c'est la partie qui retourne la bergère.
-			debut = false;
+		if (debut) //au premier tour, c'est la partie qui retourne la bergère.
 			return this.getJoueurCourant();
-		}
 		return mesJoueurs.get(getNumJoueurSuivant());
 	}
 	 public void setEnMarche(boolean enMarche){
@@ -245,7 +249,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		do{
 			c = maPioche.piocherCarte();
 			maPile.empiler(c);
-		}while (c.getS() == JOKER || c.getH() == 8 || c.getH() == 10 || c.getH() == 2 || c.getH() == AS);
+		}while (c.getS() == JOKER || c.getH() == 8 || c.getH() == 10 || c.getH() == 2 || c.getH() == AS || c.getH() == 7);
 		return c;
 	}
 	
@@ -267,9 +271,17 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		return this.enMarche;
 	}
 	
+	public int getNumJoueurPrecedent(){
+		int res = (sensCroissant) ? (numJoueurCourant-1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
+		if (res<0)
+			return nbJoueurs-1;
+		return res;
+	}
+	
 	public int getNumJoueurCourant(){
 		return this.numJoueurCourant;
 	}
+	
 	public int getNumJoueurSuivant(){
 		int res = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant-1)%nbJoueurs;
 		if (res<0)
@@ -284,14 +296,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		Message_Info = messageID;
 	}
 	public Joueur getJoueur(int id){
-		Joueur leJoueur = null;
-		for(Joueur monJoueur : mesJoueurs){
-			if(monJoueur.getId() == id){
-				leJoueur = monJoueur;
-				break;
-			}
-		}
-		return leJoueur;
+		return mesJoueurs.get(id);
 	}
 	
 	public boolean denoncier(int joueurDenonciateur, int joueurDenoncie){
