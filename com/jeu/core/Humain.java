@@ -1,14 +1,16 @@
 package com.jeu.core;
 
-
+/**
+ * Un joueur humain
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class Humain extends Joueur{
 
 	public Humain(int id) {
 		super(id);
-		
 	}
 	
-	@Override
 	public Carte jouer(Carte hautDePile, int nbAs) {
 		
 		if(this.etat == false){

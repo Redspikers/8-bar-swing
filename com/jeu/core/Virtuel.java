@@ -2,15 +2,24 @@ package com.jeu.core;
 import java.util.ArrayList;
 
 import com.jeu.strategie.*;
+
+/**
+ * Représente un joueur contrôlé par l'ordinateur
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class Virtuel extends Joueur {
 	
 	private Strategie strategie;
+	
+	/**
+	 * Constructeur de joueur virtuel
+	 * @param id L'identifiant unique du joueur dans la partie
+	 */
 	public Virtuel(int id) {
-		super(id);
-		
+		super(id);	
 	}
 
-	@Override
 	public Carte jouer(Carte hautDePile, int nbAs) {
 		Carte carteChoisie; 
 		
@@ -42,10 +51,18 @@ public class Virtuel extends Joueur {
 		return carteChoisie;
 	}
 	
+	/**
+	 * Définit la stratégie selon laquelle un joueur virtuel va jouer
+	 * @param s La stratégie à utiliser
+	 */
 	public void setStrategie(Strategie s){
 		this.strategie = s;
 	}
 	
+	/**
+	 * Recupère le symbole qui existe en plus grand nombre dans le jeu d'un joueur
+	 * @return Le symbole existant en plus grand nombre
+	 */
 	public int getSymboleMajorInJeu(){
 		//Renvoie le symbole le plus présent dans le jeu.
 		int[] nbSymbole = {0, 0, 0, 0};
