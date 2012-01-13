@@ -8,6 +8,11 @@ import java.util.Scanner;
 import java.util.Collections;
 import com.jeu.strategie.*;
 
+/**
+ * Partie de huit américain joué
+ * @author Nicolas et Victor 
+ * @version 1.0
+ */
 public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages, java.io.Serializable{
 	
 	private static final int NB_CARTES_PAR_JOUEUR = 8;
@@ -16,7 +21,6 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	private ArrayList<Joueur> mesJoueurs;
 	private Pioche maPioche;
 	private Pile maPile;
-	
 	private int nbJoueurs;
 	private int nbHumains;
 	private int numJoueurCourant; //Le numéro du joueur qui doit jouer
@@ -24,25 +28,29 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	private boolean sensCroissant; 
 	private boolean debut;
 	boolean enMarche;
-	
 	public static Scanner in = new Scanner(System.in);
 	private ArrayList<Strategie> mesStrategies;
 	private int nbAs;
 	
+	/**
+	 * Construit une nouvelle partie
+	 * @param nbH Nombre de joueurs humains
+	 * @param nbJ Nombre de joueurs au total
+	 */
 	public Partie(int nbH, int nbJ){
-		
-		
 		//On enregistre les stratégies à notre disposition
 		//Pour les affecter aux joueurs virtuels
 		this.mesStrategies = new ArrayList<Strategie>();
 		this.mesStrategies.add(new StrategieRandom());
 		this.mesStrategies.add(new StrategieHauteur());
-		
-		
 		init(nbH, nbJ);
-		
 	}
 	
+	/**
+	 * Initialise la partie créer
+	 * @param nbH Nombre de joueurs Humains
+	 * @param nbJ Nombre de joueurs au total
+	 */
 	public void init(int nbH, int nbJ){
 		this.nbJoueurs = nbJ;
 		this.nbHumains = nbH;
@@ -72,18 +80,19 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				mesJoueurs.add(v);
 			}
 		}
-		//Collections.shuffle(mesJoueurs); 
 		
 		//Distributions des cartes aux joueurs
 		distribuer();
 
-		//ICI on va retourner la bergère.
+		//Retourne la bergère.
 		analyserPassage(retournerBergere());
 		
-		//gestionDuJeuConsole();
 		
 	}
 	
+	/**
+	 * Permet de gérer le déroulement du jeu pour que les joueurs jouent tour à tour en mode graphique
+	 */
 	public void gestionDuJeu(){
 		
 		System.out.println("\n");
@@ -102,6 +111,11 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 				enMarche = false;
 	}
 	
+	/**
+	 * Permet de gérer le déroulement du jeu pour que les joueurs jouent tour à tour en mode console
+	 * Méthode gardée pour une éventuelle rétro-compatibilité avec le mode console du jeu
+	 * @Deprecated
+	 */
 	public void gestionDuJeuConsole(){
 		boolean enMarche = true;
 		Carte c;
@@ -126,21 +140,26 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		System.out.println("La partie est terminée, on va rejouer.");
 		init(2, 2);
 	}
+	
+	/**
+	 * Calcule l'indice du joueur suivant après la fin du tour du joueur actuel
+	 */
 	public void changerDeJoueur(){
-		//Calcule l'indice du joueur suivant après la fin du tour du joueur actuel.
 		this.numJoueurCourant = getNumJoueurSuivant();
 	}
+	
+	/**
+	 * Gère les mécanismes spéciaux, entre le joueur N et le joueur suivant, liés à la pose d'une carte spéciale
+	 * @param c La carte qui vient d'être posée
+	 */
 	public void analyserPassage(Carte c){
 		//Cette fonction reçoit la carte qui vient d'être jouée (c)
 		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
 		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)
 		
 		int i;
-		
-		
 		Joueur jCourant = getJoueurCourant();
 		Joueur jSuivant = getJoueurSuivant();
-		
 
 		if (c != null){ //Si le joueur courant vient de poser une carte
 			if(!debut)
@@ -177,13 +196,13 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		}
 		else{
 			Message_Info = DOIT_PASSER;
-			if (this.nbAs > 0){ //Si son prÃ©dÃ©cesseur avait jouÃ© un as, et qu'il n'a pas d'as.
+			if (this.nbAs > 0){ //Si son prédecesseur avait joué un as, et qu'il n'a pas d'as.
 				for(i=0; i<2*this.nbAs; i++)
 					jCourant.recevoirCarte(maPioche.piocherCarte());
 				Message_Info = POSE_AS;
 				this.nbAs = 0;
 			}
-			else if(jCourant.etat){ //S'il n'a pas jouÃ© car il ne pouvait pas poser, il pioche !
+			else if(jCourant.etat){ //S'il n'a pas joué car il ne pouvait pas poser, il pioche
 				Message_Info = AUCUNE_CARTE_JOUABLE;
 				jCourant.recevoirCarte(maPioche.piocherCarte());
 			}
@@ -192,24 +211,46 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 	}
 
+	/**
+	 * Récupère le joueur qui vient de jouer
+	 * @return Le joueur venant de jouer
+	 */
 	public Joueur getJoueurPrecedent(){
 		if (debut) //au premier tour, c'est la partie qui retourne la bergère.
 			return this.getJoueurCourant();
 		return mesJoueurs.get(getNumJoueurPrecedent());
 	}
+	
+	/**
+	 * Récupère le joueur qui joue
+	 * @return Le joueur en train de joeur
+	 */
 	public Joueur getJoueurCourant(){
 		return mesJoueurs.get(numJoueurCourant);
 	}
+	
+	/**
+	 * Récupère le joueur qui va jouer après le tour du joueur courant
+	 * @return Le joueur qui va jouer
+	 */
 	public Joueur getJoueurSuivant(){
 		if (debut) //au premier tour, c'est la partie qui retourne la bergère.
 			return this.getJoueurCourant();
 		return mesJoueurs.get(getNumJoueurSuivant());
 	}
-	 public void setEnMarche(boolean enMarche){
+	
+	/**
+	 * Définit si le jeu est en marche
+	 * @param enMarche L'état du jeu
+	 */
+	public void setEnMarche(boolean enMarche){
 		 this.enMarche = enMarche;
-	 }
+	}
 
-
+	/**
+	 * Teste si un joueur a gagné la partie
+	 * @return Vrai si un joueur a gagné
+	 */
 	public boolean isVictoire(){
 		for(Joueur j : mesJoueurs){
 			if(j.getNbCartesJeu() == 0)
@@ -217,13 +258,18 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		}
 		return false;
 	}
+	
+	/**
+	 * Traduit une carte du format numérique en format textuel
+	 * @param c La carte à traduire
+	 * @return Le texte de la traduction
+	 */
 	public String traduireCarte(Carte c){
 		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
 		//cette fonction retournera la chaine "valet de trèfle"
 		//On pourra aussi la modifier pour retourner {"valet", "trèfle"}
 		
 		int[] haut_symb = c.get();
-		//System.out.println(haut_symb[0] + "  " + haut_symb[1]);
 		if (haut_symb[1] == JOKER)
 			return Symbole[haut_symb[1]];
 		else if (haut_symb[1] == -1)
@@ -232,6 +278,10 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 			return Hauteur[haut_symb[0]]+ " de " + Symbole[haut_symb[1]];
 		
 	}
+	
+	/**
+	 * Distribue les cartes aux joueurs
+	 */
 	public void distribuer(){
 		for(Joueur monJoueur : mesJoueurs){
 			for(int i=0; i<NB_CARTES_PAR_JOUEUR; i++){
@@ -241,6 +291,11 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		}
 
 	}
+	
+	/**
+	 * Retourne la bergère dans la pioche pour créer la pile
+	 * @return La carte bergère
+	 */
 	public Carte retournerBergere(){
 		//Tant que la bergère est un joker,
 		//on recreer une pioche et on reessaye.
@@ -253,24 +308,50 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		return c;
 	}
 	
+	/**
+	 * Recupère une collection de joueurs
+	 * @return Les joueurs participant à la partie
+	 */
 	public ArrayList<Joueur> getJoueurs(){
 		return this.mesJoueurs;
 	}
 	
+	/**
+	 * Récupère le nombre d'As joués à la suite
+	 * @return Le nombre d'As joués à la suite
+	 */
 	public int getNbAs(){
 		return this.nbAs;
 	}
+	
+	/**
+	 * Récupère la pile du jeu
+	 * @return La pile du jeu
+	 */
 	public Pile getPile(){
 		return this.maPile;
 	}	
+	
+	/**
+	 * Récupère la pioche du jeu
+	 * @return La pioche du jeu
+	 */
 	public Pioche getPioche(){
 		return this.maPioche;
 	}
 	
+	/**
+	 * Récupère l'état du jeu
+	 * @return Vrai si le jeu est en marche
+	 */
 	public boolean getEnMarche(){
 		return this.enMarche;
 	}
 	
+	/**
+	 * Récupère le numéro du joueur précédent
+	 * @return Le numéro du joueur précédent
+	 */
 	public int getNumJoueurPrecedent(){
 		int res = (sensCroissant) ? (numJoueurCourant-1)%nbJoueurs : (numJoueurCourant+1)%nbJoueurs;
 		if (res<0)
@@ -278,27 +359,56 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		return res;
 	}
 	
+	/**
+	 * Récupère le numéro du joueur courant
+	 * @return Le numéro du joueur courant
+	 */
 	public int getNumJoueurCourant(){
 		return this.numJoueurCourant;
 	}
 	
+	/**
+	 * Récupère le numéro du joueur suivant
+	 * @return Le numéro du joueur suivant
+	 */
 	public int getNumJoueurSuivant(){
 		int res = (sensCroissant) ? (numJoueurCourant+1)%nbJoueurs : (numJoueurCourant-1)%nbJoueurs;
 		if (res<0)
 			return nbJoueurs-1;
 		return res;
 	}
+	
+	/**
+	 * Récupère le message actuel
+	 * @return Le message actuel
+	 */
 	public String getMessageActuel(){
 		return MESSAGE[Message_Info];
 	}
 	
+	/**
+	 * Définit le message à afficher dans la status bar
+	 * @param messageID Le message à afficher
+	 */
 	public void setMessageActuel(int messageID){
 		Message_Info = messageID;
 	}
+	
+	/**
+	 * Récupère la référence sur un joueur en fonction de son identifiant
+	 * @param id L'identifiant du joueur
+	 * @return Le joueur recherché
+	 */
 	public Joueur getJoueur(int id){
 		return mesJoueurs.get(id);
 	}
 	
+	/**
+	 * Dénonce un joueur qui n'a pas dit "Carte !"
+	 * @param joueurDenonciateur Le joueur qui dénonce
+	 * @param joueurDenoncie Le joueur dénoncé
+	 * @return Vrai si La dénonciation était justifiée, faux sinon
+	 */
 	public boolean denoncier(int joueurDenonciateur, int joueurDenoncie){
 		Joueur leJoueurDenonciateur = getJoueur(joueurDenonciateur);
 		Joueur leJoueurDenoncie     = getJoueur(joueurDenoncie);
@@ -315,38 +425,39 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		
 	}
 	
+	/**
+	 * Vérifie si la pioche est bientôt vide
+	 */
 	public void verifierPioche(){
 		//Si la pioche n'a presque plus de carte, on en prend 
-		//dans la pile qui contient pas mal de cartes.
+		//dans la pile qui contient des cartes.
 		if(maPioche.isPiochePresqueVide())
 			maPioche.retournerPile(maPile);
 	}
+	
+	/**
+	 * Sauvegarde la partie sur l'ordinateur
+	 */
 	public void sauvegarderPartie(){
-		// Write to disk with FileOutputStream
 		FileOutputStream f_out = null;
 		try {
 			f_out = new 
-				FileOutputStream("sauvegarde.8bar");
+				FileOutputStream("sauvegarde.8bar"); // Fichier enregistré sur l'ordinateur
 		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 
-		// Write object with ObjectOutputStream
 		ObjectOutputStream obj_out = null;
 		try {
 			obj_out = new
 				ObjectOutputStream(f_out);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		// Write object out to disk
 		try {
 			obj_out.writeObject(this);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
