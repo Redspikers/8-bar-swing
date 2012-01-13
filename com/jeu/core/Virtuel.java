@@ -10,6 +10,7 @@ import com.jeu.strategie.*;
  */
 public class Virtuel extends Joueur {
 	
+	private static final long serialVersionUID = 1L;
 	private Strategie strategie;
 	
 	/**

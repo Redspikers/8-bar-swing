@@ -9,13 +9,15 @@ import java.util.Observable;
  * @author Nicolas et Victor 
  * @version 1.0
  */
-public abstract class Joueur extends Observable implements Enums_Interfaces.Symbole, Enums_Interfaces.Hauteur, java.io.Serializable{
+public abstract class Joueur extends Observable implements com.jeu.Enums_Interfaces.Symbole, com.jeu.Enums_Interfaces.Hauteur, java.io.Serializable{
 	
+
+	private static final long serialVersionUID = 1L;
 	private int id;
 	protected boolean etat;
 	private boolean disCarte;
 	protected ArrayList<Carte> monJeu;
-	public abstract Carte jouer(Carte hautDePile, int nbAs);
+	
 	public static Scanner in = new Scanner(System.in);
 	
 	/**
@@ -29,6 +31,13 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 		this.monJeu = new ArrayList<Carte>();
 	}
 	
+	/**
+	 * Permet au joueur de choisir une carte
+	 * @param hautDePile La carte qui est en haut de la pile
+	 * @param nbAs Le nombre d'as dernièrement joue
+	 * @return La carte choisie par le joueur
+	 */
+	public abstract Carte jouer(Carte hautDePile, int nbAs);
 	/**
 	 * Récupère l'identifiant du joueur
 	 * @return L'identifiant du joueur
@@ -79,7 +88,6 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 		int[] c_tab    = c.get();
 		int[] pile_tab = hautDePile.get();
 		int symboleEtudie;
-		boolean conditionHuitJoker; //La carte que l'on veut placée est-elle un huit ou un joker ?
 		
 		if (hautDePile instanceof CarteSpeciale)
 			symboleEtudie = ((CarteSpeciale)hautDePile).getSymboleChoisi();
@@ -200,11 +208,7 @@ public abstract class Joueur extends Observable implements Enums_Interfaces.Symb
 	 * @param c La carte à traduire
 	 * @return La traduction en texte
 	 */
-	public String traduireCarte(Carte c){
-		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
-		//cette fonction retournera la chaine "valet de trèfle"
-		//On pourra aussi la modifier pour retourner {"valet", "trèfle"}
-		
+	public String traduireCarte(Carte c){		
 		int[] haut_symb = c.get();
 		if (haut_symb[1] == JOKER)
 			return Symbole[haut_symb[1]];

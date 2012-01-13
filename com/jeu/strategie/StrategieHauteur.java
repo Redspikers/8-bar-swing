@@ -10,6 +10,8 @@ import com.jeu.core.Carte;
  */
 public class StrategieHauteur implements Strategie, java.io.Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	public Carte choisirCarte(ArrayList<Carte> cartesJouables){
 		Carte carteChoisie = cartesJouables.get(0);
 		for(Carte c : cartesJouables){

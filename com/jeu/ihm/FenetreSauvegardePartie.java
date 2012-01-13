@@ -17,8 +17,9 @@ import javax.swing.JLabel;
  * @author Nicolas et Victor
  * @version 1.0
  */
-public class FenetreSauvegardePartie extends JDialog implements Enums_Interfaces.Hauteur{
+public class FenetreSauvegardePartie extends JDialog implements com.jeu.Enums_Interfaces.Hauteur{
 	
+	private static final long serialVersionUID = 1L;
 	private boolean sauver = false;
     
 	/**

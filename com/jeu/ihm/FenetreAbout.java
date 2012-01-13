@@ -20,6 +20,8 @@ import javax.swing.JLabel;
  */
 public class FenetreAbout extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructeur permettant de créer la fenêtre "A propos"
 	 * @param parent La fenêtre parente
@@ -57,7 +59,6 @@ public class FenetreAbout extends JDialog {
 				"dans le cadre du cours de java de l'UTT (LO02) tutoré par Guillaume DOYEN et Baptiste CABLÉ.<br>" +
 				"Le jeu est sous licence CeCILLv2"+
 				"</html>");
-        //label_nom.setFont(new Font("Serif", Font.PLAIN, 36));
 		this.add(label_description, gbc);
 		gbc.gridy++;
 		JButton b = new JButton("OK");

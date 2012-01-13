@@ -7,8 +7,9 @@ import java.util.Collections;
  * @author Nicolas et Victor 
  * @version 1.0
  */
-public class Pioche implements Enums_Interfaces.Symbole, java.io.Serializable{
+public class Pioche implements com.jeu.Enums_Interfaces.Symbole, java.io.Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Carte> cPioche = new ArrayList<Carte>();
 	
 	/**

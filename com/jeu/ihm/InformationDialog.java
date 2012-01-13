@@ -14,6 +14,8 @@ import javax.swing.JLabel;
  */
 public class InformationDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructeur de la fenêtre de dialogue
 	 * @param parent La fenêtre parente
@@ -46,7 +48,6 @@ public class InformationDialog extends JDialog {
 	 */
     class OKListener implements ActionListener{
         public void actionPerformed(ActionEvent arg0) {
-            JButton b = (JButton) arg0.getSource();
             destroyDialog();
         }
     }

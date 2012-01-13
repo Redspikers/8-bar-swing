@@ -6,6 +6,7 @@ package com.jeu.core;
  */
 public class Carte implements java.io.Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private int hauteur;	//2, 3, 4, ..., 15
 	private int symb;		//0, 1, 2, 3, 4 = Pique, carreau, trèfle, coeur et joker
 	

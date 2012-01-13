@@ -9,6 +9,9 @@ import com.jeu.core.Carte;
  */
 public class StrategieRandom implements Strategie, java.io.Serializable{
 	
+
+	private static final long serialVersionUID = 1L;
+
 	public Carte choisirCarte(ArrayList<Carte> cartesJouables){
 		return cartesJouables.get((int)(Math.random()*cartesJouables.size()));
 	}

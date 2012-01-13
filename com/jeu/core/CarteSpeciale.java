@@ -7,6 +7,8 @@ package com.jeu.core;
  */
 public class CarteSpeciale extends Carte {
 	
+
+	private static final long serialVersionUID = 1L;
 	private int symboleChoisi; 
 	
 	/**

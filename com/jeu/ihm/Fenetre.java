@@ -4,13 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
+
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -36,8 +34,10 @@ import com.jeu.core.Partie;
  * @author Nicolas et Victor
  * @version 1.0
  */
-public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteur, Enums_Interfaces.Messages, Enums_Interfaces.Symbole{
+public class Fenetre extends JFrame implements Observer, com.jeu.Enums_Interfaces.Hauteur, com.jeu.Enums_Interfaces.Messages, com.jeu.Enums_Interfaces.Symbole{
 	
+
+	private static final long serialVersionUID = 1L;
 	public static final int TEMPS_VIRTUEL = 10; //Temps avant de laisser l'IA jouer.
 	private Partie maPartie = null;
 	private GridBagLayout gbl = new GridBagLayout();
@@ -72,7 +72,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 		
         //Création de la barre de menu.
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu, submenu;
+        JMenu menu;
         JMenuItem menuItem;
         
         //Menu Actions
@@ -339,7 +339,7 @@ public class Fenetre extends JFrame implements Observer, Enums_Interfaces.Hauteu
 			couleurDemandee += Symbole[((CarteSpeciale)hautDePile).getSymboleChoisi()];
 		else
 			couleurDemandee += Symbole[hautDePile.getS()];
-		statusBarLabel.setText(couleurDemandee+" | "+maPartie.getMessageActuel());//+" | "+statusBarLabel.getText()
+		statusBarLabel.setText(couleurDemandee+" | "+maPartie.getMessageActuel());
 	}
 	
 	/**

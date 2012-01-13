@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 public class BoutonCarteJoueur extends BoutonCarteDos implements MouseListener{
 
 
+	private static final long serialVersionUID = 1L;
 	protected int joueurID;
 	
 	/**

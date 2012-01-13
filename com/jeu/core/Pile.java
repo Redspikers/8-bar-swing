@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Pile implements java.io.Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Carte> cPile = new ArrayList<Carte>();
 	
 	/**

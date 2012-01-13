@@ -15,7 +15,8 @@ import com.jeu.core.Carte;
  */
 public class ChoixSymbole extends JDialog{
     
-    private int symbole;
+	private static final long serialVersionUID = 1L;
+	private int symbole;
     
     /**
      * Constructeur permettant de créer la fenêtre

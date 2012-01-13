@@ -17,7 +17,8 @@ import javax.swing.JLabel;
  */
 public class FenetreDebutPartie extends JDialog{
     
-    private int nbJTotal = 2;
+	private static final long serialVersionUID = 1L;
+	private int nbJTotal = 2;
     private int nbHumains = 2;
     private JComboBox comboJTotal;
     private JComboBox comboHumains;

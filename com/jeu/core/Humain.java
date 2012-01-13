@@ -7,6 +7,8 @@ package com.jeu.core;
  */
 public class Humain extends Joueur{
 
+	private static final long serialVersionUID = 1L;
+
 	public Humain(int id) {
 		super(id);
 	}
@@ -18,8 +20,6 @@ public class Humain extends Joueur{
 		}
 		int hauteur;
 		int symbole;
-		int choix;
-		boolean carteJouable = false;
 		Carte c;
 		
 

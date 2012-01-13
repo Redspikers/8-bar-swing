@@ -15,6 +15,7 @@ import com.jeu.core.Carte;
  */
 public class BoutonCarte extends JButton implements MouseListener{
 
+	private static final long serialVersionUID = 1L;
 	protected Carte carte;
 	protected Image img;
 	

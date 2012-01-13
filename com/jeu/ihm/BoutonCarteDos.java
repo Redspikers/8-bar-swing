@@ -15,6 +15,7 @@ import javax.swing.JButton;
 public class BoutonCarteDos extends JButton implements MouseListener{
 
 
+	private static final long serialVersionUID = 1L;
 	protected Image img;
 	
 	/**

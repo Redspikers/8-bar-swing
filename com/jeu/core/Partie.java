@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Collections;
 import com.jeu.strategie.*;
 
 /**
@@ -13,8 +12,10 @@ import com.jeu.strategie.*;
  * @author Nicolas et Victor 
  * @version 1.0
  */
-public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbole, Enums_Interfaces.Messages, java.io.Serializable{
+public class Partie implements com.jeu.Enums_Interfaces.Hauteur, com.jeu.Enums_Interfaces.Symbole, com.jeu.Enums_Interfaces.Messages, java.io.Serializable{
 	
+
+	private static final long serialVersionUID = 1L;
 	private static final int NB_CARTES_PAR_JOUEUR = 8;
 	private static final int NOMBRE_STRATEGIES = 2;
 	public static int Message_Info = 0;
@@ -27,7 +28,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	//Le déroulement est croissant (joueur0 puis joueur1 puis ...) au début mais peut s'inverser.
 	private boolean sensCroissant; 
 	private boolean debut;
-	boolean enMarche;
+	private boolean enMarche;
 	public static Scanner in = new Scanner(System.in);
 	private ArrayList<Strategie> mesStrategies;
 	private int nbAs;
@@ -149,13 +150,10 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	}
 	
 	/**
-	 * Gère les mécanismes spéciaux, entre le joueur N et le joueur suivant, liés à la pose d'une carte spéciale
+	 * Pose la carte choisie, et gère les mécanismes spéciaux, entre le joueur N et le joueur suivant, liés à la pose d'une carte spéciale
 	 * @param c La carte qui vient d'être posée
 	 */
 	public void analyserPassage(Carte c){
-		//Cette fonction reçoit la carte qui vient d'être jouée (c)
-		//Elle permet d'effectuer tous les mechanismes entre le joueurN et le joueurN+1
-		//(piocher une carte chez un autre joueur, dans la pioche, compter les As, ...)
 		
 		int i;
 		Joueur jCourant = getJoueurCourant();
@@ -267,7 +265,6 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	public String traduireCarte(Carte c){
 		//Exemple : pour c tel que c.hauteur = 11 et c.symb = 2
 		//cette fonction retournera la chaine "valet de trèfle"
-		//On pourra aussi la modifier pour retourner {"valet", "trèfle"}
 		
 		int[] haut_symb = c.get();
 		if (haut_symb[1] == JOKER)
@@ -286,7 +283,6 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 		for(Joueur monJoueur : mesJoueurs){
 			for(int i=0; i<NB_CARTES_PAR_JOUEUR; i++){
 				monJoueur.recevoirCarte(maPioche.piocherCarte());
-				//System.out.println("Joueur " + this.id + " --> Reçu : " + maCarte.get()[0] + ":" + maCarte.get()[1]);
 			}
 		}
 
@@ -297,8 +293,8 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	 * @return La carte bergère
 	 */
 	public Carte retournerBergere(){
-		//Tant que la bergère est un joker,
-		//on recreer une pioche et on reessaye.
+		//Tant que la bergère est une carte avec effet,
+		//on repioche.
 		
 		Carte c;
 		do{
@@ -426,7 +422,7 @@ public class Partie implements Enums_Interfaces.Hauteur, Enums_Interfaces.Symbol
 	}
 	
 	/**
-	 * Vérifie si la pioche est bientôt vide
+	 * Verifie que la pioche a encore suffisamment de cartes, et la remplit dans le cas contraire
 	 */
 	public void verifierPioche(){
 		//Si la pioche n'a presque plus de carte, on en prend 

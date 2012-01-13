@@ -15,8 +15,10 @@ import com.jeu.core.Joueur;
  * @author Nicolas et Victor
  * @version 1.0
  */
-public class FenetreFinPartie extends JDialog implements Enums_Interfaces.Hauteur{
+public class FenetreFinPartie extends JDialog implements com.jeu.Enums_Interfaces.Hauteur{
     
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructeur de la fenêtre affichant les résultats de la Partie
 	 * @param parent La fenêtre parente
